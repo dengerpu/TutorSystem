@@ -30,8 +30,28 @@
                 <el-table-column prop="date" label="日期"></el-table-column>
                 <el-table-column  label="状态">
                     <template slot-scope="scope">
-                        <el-switch @change="userStateChange(scope.row)" v-model="scope.row.status"></el-switch>
+                        <el-tooltip :content="'Switch value: ' + scope.row.status" placement="top">
+                                <el-switch
+                                    v-if="scope.row.status==0"
+                                    v-model="scope.row.status"
+                                    active-color="#ff4949"
+                                    inactive-color="#13ce66"
+                                    active-value="1"
+                                    inactive-value="0"
+                                    @change="userStateChange(scope.row)"
+                                ></el-switch>
+                                 <el-switch
+                                    v-if="scope.row.status==1"
+                                    v-model="scope.row.status"
+                                    active-color="#ff4949"
+                                    inactive-color="#13ce66"
+                                    active-value="1"
+                                    inactive-value="0"
+                                    @change="userStateChange(scope.row)"
+                                ></el-switch>
+                        </el-tooltip>
                     </template>
+                   
                 </el-table-column>
                 <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
@@ -39,9 +59,9 @@
                         <el-button type="primary" icon="el-icon-edit" size="mini" @click="showeditDialogVisible(scope.row.id)"></el-button>
                         <!-- 删除按钮 -->
                         <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.id)"></el-button>
-                        <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
+                        <el-tooltip effect="dark" content="更改类型" placement="top" :enterable="false">
                              <!-- 分配角色按钮 -->
-                                <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+                                <el-button type="warning" icon="el-icon-setting"  size="mini"  @click="updateType(scope.row)"></el-button>
                         </el-tooltip>
                     
                     </template>
@@ -68,21 +88,21 @@
         width="50%">
         <!-- 内容主题区域 -->
         <span>
-            <el-form ref="addform" :model="addform" label-width="80px">
-                <el-form-item label="用户名">
+            <el-form ref="addform" :rules="addformRules" :model="addform" label-width="80px">
+                <el-form-item label="用户名" prop="username">
                     <el-input v-model="addform.username"></el-input>
                 </el-form-item>
-                 <el-form-item label="密码">
+                 <el-form-item label="密码" prop="password">
                     <el-input v-model="addform.password"></el-input>
                 </el-form-item>
-                 <el-form-item label="邮箱">
+                 <el-form-item label="邮箱" prop="email">
                     <el-input v-model="addform.email"></el-input>
                 </el-form-item>
-                 <el-form-item label="手机号">
+                 <el-form-item label="手机号" prop="phone">
                     <el-input v-model="addform.phone"></el-input>
                 </el-form-item>
-                <el-form-item label="类型">
-                    <el-select v-model="addform.role" placeholder="请选择类型">
+                <el-form-item label="类型" prop="type"> 
+                    <el-select v-model="addform.type" placeholder="请选择类型">
                     <el-option label="管理员" value="admin"></el-option>
                     <el-option label="学生" value="student"></el-option>
                     <el-option label="老师" value="teacher"></el-option>
@@ -93,7 +113,7 @@
         <!-- 底部区域 -->
         <span slot="footer" class="dialog-footer">
             <el-button @click="addDialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="addUser" >确 定</el-button>
+            <el-button type="primary" @click="addUser('addform')" >确 定</el-button>
         </span>
         </el-dialog>
 
@@ -115,13 +135,13 @@
                     <el-input v-model="editForm.email"></el-input>
                 </el-form-item>
                  <el-form-item label="手机号">
-                    <el-input v-model="editForm.mobile"></el-input>
+                    <el-input v-model="editForm.phone"></el-input>
                 </el-form-item>
                 <el-form-item label="角色">
-                    <el-select v-model="editForm.role" placeholder="请选择角色">
+                    <el-select v-model="editForm.type" placeholder="请选择角色">
                     <el-option label="管理员" value="admin"></el-option>
-                    <el-option label="会员" value="vip"></el-option>
-                    <el-option label="普通用户" value="ordinary"></el-option>
+                    <el-option label="学生" value="student"></el-option>
+                    <el-option label="老师" value="teacher"></el-option>
                     </el-select>
                 </el-form-item>
             </el-form>
@@ -132,12 +152,63 @@
             <el-button type="primary" @click="editUser">确 定</el-button>
         </span>
         </el-dialog>
+
+          <!-- 更改类型的对话框 -->
+        <el-dialog
+        title="更改用户类型"
+        :visible.sync="updateDialogVisible"
+        width="50%">
+        <!-- 内容主题区域 -->
+        <span>
+            <el-form ref="" :model="editTypeForm" label-width="80px">
+                <el-form-item label="角色">
+                    <el-select v-model="editTypeForm.type" placeholder="请选择角色">
+                    <el-option label="管理员" value="admin"></el-option>
+                    <el-option label="学生" value="student"></el-option>
+                    <el-option label="老师" value="teacher"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+        </span>
+        <!-- 底部区域 -->
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="updateDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="updateUserType">确 定</el-button>
+        </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
 export default {
     data(){
+        //自定义验证密码
+    var validatePass = (rule, value, callback) => {
+      let reg = new RegExp("[ ]");
+      if (value === "") {
+        callback(new Error("请输入密码"));
+      } else if (/[\u4E00-\u9FA5]/g.test(value)) {
+        callback(new Error("不能输入中文!"));
+      } else if (reg.test(value)) {
+        callback(new Error("不能输入空格字符"));
+      } else{
+        callback();
+      }
+    };
+        //自定义手机号码验证
+        var checkPhone = (rule, value, callback) => {
+                if (!value) {
+                    return callback(new Error('手机号不能为空'));
+                } else {
+                    const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+                    //console.log(reg.test(value));
+                    if (reg.test(value)) {
+                        callback();
+                    } else {
+                        return callback(new Error('请输入正确的手机号'));
+                    }
+                }
+            };
         return{
             //获取用户列表的参数对象
             queryInfo:{
@@ -147,11 +218,14 @@ export default {
             },
             total:0,  //总数据数
             userlist: [],//用户数据
-          addDialogVisible:false, //控制添加对话框的显示与隐藏
+            editTypeForm:{},
+            addDialogVisible:false, //控制添加对话框的显示与隐藏
             editDialogVisible:false,
+            updateDialogVisible:false,
+            updateTypeForm:{},
             editForm:{
             }, //查询到的用户信息
-             addform: {  //添加的用户信息
+            addform: {  //添加的用户信息
                 username: '',
                 password: '',
                 email: '',
@@ -159,17 +233,44 @@ export default {
                 type:'',
                 status:0,//0代表正常
                 date:''
-            }
-        }
+            },
+             addformRules: {
+                username: [
+                { required: true, message: "请输入账号", trigger: "blur" },
+                { min: 5, message: "请输入正确的学号/职工号", trigger: "blur" },
+                { max: 11, message: "请输入正确的学号/职工号", trigger: "blur" },
+                ],
+                email: [
+                { required: true, message: "请输入邮箱地址", trigger: "blur" },
+                {
+                    type: "email",
+                    message: "请输入正确的邮箱地址",
+                    trigger: ["blur", "change"],
+                }
+                ],
+                phone: [
+                {required:true, validator:checkPhone, trigger: ['blur', 'change'] }
+                ],
+                password: [
+                { required: true, trigger: "blur", validator: validatePass },
+                { max: 12, message: "长度不能超过12个字符", trigger: "blur" },
+                { min: 6, message: "长度不能少于6个字符", trigger: "blur" },
+                ],
+                 type: [{ required: true, message: "请选择用户", trigger: "blur" }]
+            },
+
+        };
     },
     methods:{
         async getUserList(){
+            //console.log(this.queryInfo);
             //发送请求获取数据
            const {data:res} = await this.$http.get('/users',{params:this.queryInfo});
+           console.log(res);
            if(res.status!=200){
-                    return this.$message.error(res.errorMsg)
-            }else{
-                console.log(res);
+                    return this.$message.error(res.msg)
+            }else if(res.status==200){
+              //  console.log(res);
                 this.userlist = res.data.list;
                 this.total = res.data.totalCount;
             }
@@ -189,56 +290,63 @@ export default {
              this.getUserList();
         },
         //监听switch开关的改变
-        userStateChange(userinfo){
+       async userStateChange(userinfo){
             console.log(userinfo);
-            //发送请求改变用户状态
-            //this.$http.put()
-            //发生错误不等于200 ，然后取反，保证状态不会发生变化
-            // if(status!=200){
-            //     userinfo.mg_state = !userinfo.mg_state;
-            //     return this.$message.error('更新用户状态失败');
-            // }
-            // return this.$message.success('更新用户状态成功');
+           this.updateTypeForm = userinfo;
+          //  发送请求改变用户状态
+           const {data:res} = await this.$http.post("/edituser",this.updateTypeForm);
+           //console.log(res);
+            if(res.status!=200){
+                return this.$message.error(res.msg);
+            }
+            if(res.status==200){
+                this.$message.success(res.msg)
+                this.getUserList();
+            }
         },
         //添加用户
-        async addUser(){
-            const{data:res}= await this.$http.post("/users",this.addform)
-            console.log(res);
-            if(!res.flag){
-               return  this.$message.error(res.errorMsg);
-            }
-            if(res.flag){
-                this.$message.success(res.errorMsg);
-                this.getUserList();
-                this.addDialogVisible = false
-            }
-            
+         addUser(addform){
+              this.$refs[addform].validate(async valid => {
+                  if(valid){
+                     this.addform.status = 0;
+                     this.addform.date = new Date();
+                     const{data:res}= await this.$http.post("/users",this.addform)
+                   //  console.log(res);
+                     if(res.status===200){
+                        this.$message.success(res.msg);
+                        this.getUserList();
+                        this.addDialogVisible = false
+                     }else{
+                          this.$message.error(res.msg);
+                     }
+                  }else{
+                  //  console.log('error submit!!');
+                   this.$message.error("信息校验不合法");
+                    return false;
+                  }
+              }); 
         },
         //修改对话框事件
         async showeditDialogVisible(id){
-            //根据id查询用户信息
-            // this.$http.get()
-            
             const {data:res} = await this.$http.get("/edituser",{params:{"id":id}});
-           if(!res.flag){
-                return this.$message.error(res.errorMsg);
-            }
-            if(res.flag){
+            //console.log(res);
+           if(res.status!=200){
+                return this.$message.error(res.msg);
+            }else if(res.status==200){
                 this.editForm = res.data;
-                this.$message.success(res.errorMsg)
+                this.$message.success(res.msg)
                 
             }
             this.editDialogVisible = true;
             
         },
         async editUser(){
-            
             const {data:res} = await this.$http.post("/edituser",this.editForm);
-            if(!res.flag){
-                return this.$message.error(res.errorMsg);
+            if(res.status!=200){
+                return this.$message.error(res.msg);
             }
-            if(res.flag){
-                this.$message.success(res.errorMsg)
+            if(res.status==200){
+                this.$message.success(res.msg)
                 this.editDialogVisible = false;
                 this.getUserList();
             }
@@ -257,20 +365,37 @@ export default {
           }
            if(confirmResult == 'confirm'){
               const {data:res} = await this.$http.get("/deleteuser",{params:{"id":id}})
-              if(!res.flag){
-                return this.$message.error(res.errorMsg);
+              if(res.status!=200){
+                return this.$message.error(res.msg);
             }
-            if(res.flag){
-                this.$message.success(res.errorMsg)
+            if(res.status==200){
+                this.$message.success(res.msg)
                 this.getUserList();
             }
           }
+        },
+        //更改用户类型
+        updateType(userinfo){
+            //console.log(userinfo);
+            this.editTypeForm = userinfo;
+            this.updateDialogVisible = true;
+
+        },
+        async updateUserType(){
+              const {data:res} = await this.$http.post("/edituser",this.editTypeForm);
+            if(res.status!=200){
+                return this.$message.error(res.msg);
+            }
+            if(res.status==200){
+                this.$message.success(res.msg)
+                this.getUserList();
+                this.updateDialogVisible = false;
+            }
         }
 
     },
     created(){
         this.getUserList();
-        //console.log(new Date());
     }
     
 }

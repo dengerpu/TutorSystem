@@ -1,16 +1,7 @@
 <template>
   <el-container style="height: 100%; background: antiquewhite; ">
-
-    <el-container
-      style="padding: 10px;line-height: 0; background:#66b5cd; margin:0 auto"
-    >
-
-      <el-row
-        style="height:100%;margin:0 auto"
-        type="flex"
-        class="row-bg loginpageback"
-        justify="space-around"
-      >
+    <el-container style="padding: 10px;line-height: 0; background:#66b5cd; margin:0 auto">
+      <el-row style="height:100%;margin:0 auto" type="flex" class="row-bg loginpageback" justify="space-around">
 
         <el-row>
             <!-- 标题 -->
@@ -146,13 +137,12 @@ export default {
 
     return {
       labelPosition: "left",
-
       formData: {
         username: "",
         password: "",
         type:[],
       },
- responseResult: [],
+      responseResult: [],
       rules: {
          username: [
           { required: true, message: "请输入账号", trigger: "blur" },
@@ -200,12 +190,13 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-         // console.log(this.formData);
+          console.log(this.formData);
            const {data: res}= await this.$http.post('/login', {
                 username: this.formData.username,
                 password: this.formData.password,
                 type: this.formData.type
                 }); 
+                console.log(res);
                 if(res.status===200){
                   this.$message.success("登陆成功");
                   //1.2token只应在当前网站打开期间生效，所以将token保存在sessionStorage中
