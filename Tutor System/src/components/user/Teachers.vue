@@ -31,17 +31,18 @@
                 <el-table-column type="index"></el-table-column>
                 <el-table-column  label="照片" width="250">
                     <template slot-scope="scope">
-                        <img :src="scope.row.photo"></img>
+                        <img :src="scope.row.image"></img>
                     </template>
                </el-table-column>
+                <el-table-column prop="username" label="工号" ></el-table-column>
                 <el-table-column prop="name" label="姓名" ></el-table-column>
                 <el-table-column prop="sex" label="性别" ></el-table-column>
-                <el-table-column prop="teacher" label="是否有教师资格证" ></el-table-column>
-                <el-table-column prop="age" label="年龄" ></el-table-column>
-                <el-table-column prop="class1" label="类别"></el-table-column>
-                <el-table-column prop="phone" label="电话"></el-table-column>
-                <el-table-column prop="achievement" label="教学成就"></el-table-column>
-                <el-table-column prop="describes" label="教学经历"></el-table-column>
+                <el-table-column prop="college" label="学院" ></el-table-column>
+                <el-table-column prop="major" label="专业" ></el-table-column>
+                <el-table-column prop="email" label="邮箱"></el-table-column>
+                <el-table-column prop="phone" label="联系方式"></el-table-column>
+                <el-table-column prop="interest" label="研究方向"></el-table-column>
+                <el-table-column prop="introduce_brief" label="个人简介"></el-table-column>
                 <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
                         <!-- 修改按钮 -->
@@ -497,17 +498,16 @@ export default {
                 },
         async getTeacherList(){
             //发送请求获取数据
-           const {data:res} = await this.$http.get('/teacherlist',{params:this.queryInfo});
-            console.log(res);
-           if(!res.flag){
-                    this.teacherlist = [];
-                    this.total = 0;
-                    return this.$message.error(res.errorMsg)
-                }
-                if(res.flag){
-                    this.teacherlist = res.data.users;
-                    this.total = res.data.totalpage;
-                }
+           const {data:res} = await this.$http.get('/teachers',{params:this.queryInfo});
+           console.log(res);
+           if(res.status!=200){
+                this.teacherlist = [];
+                this.total = 0;
+                return this.$message.error(res.msg)
+            }else if(res.status==200){
+                this.teacherlist = res.data.list;
+                this.total = res.data.totalCount;
+            }
         },
         //监听oagesize改变的事件
         handleSizeChange(newSize){
@@ -525,10 +525,6 @@ export default {
         },
         //添加用户
         async addTeacher(){
-          if(this.value == null || this.addform.sex == null|| this.addform.teacher ==null){
-            return this.$message.error("请选择");
-          }
-             this.addform.class1 = this.value[0]+'/'+this.value[1]+'/'+this.value[2];
             const{data:res}= await this.$http.post("/addteacher",this.addform)
             console.log(res);
             if(!res.flag){
@@ -551,7 +547,6 @@ export default {
             }
             if(res.flag){
                 this.editForm = res.data;
-                this.value1 = this.editForm.class1.split("/");
                 this.$message.success(res.errorMsg)     
             }
             this.editDialogVisible = true;
