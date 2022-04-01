@@ -37,13 +37,15 @@
                 <el-table-column prop="username" label="工号" ></el-table-column>
                 <el-table-column prop="name" label="姓名" ></el-table-column>
                 <el-table-column prop="sex" label="性别" ></el-table-column>
+                <el-table-column prop="age" label="年龄" ></el-table-column>
                 <el-table-column prop="college" label="学院" ></el-table-column>
-                <el-table-column prop="major" label="专业" ></el-table-column>
                 <el-table-column prop="email" label="邮箱"></el-table-column>
                 <el-table-column prop="phone" label="联系方式"></el-table-column>
                 <el-table-column prop="interest" label="研究方向"></el-table-column>
-                <el-table-column prop="introduce_brief" label="更多">
-                    <a>详情</a>
+                <el-table-column prop="" label="更多">
+                    <template slot-scope="scope">
+                      <el-link type="primary" @click="getDetails(scope.row.id)">详情</el-link>
+                    </template>
                 </el-table-column>
                 <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
@@ -75,7 +77,7 @@
         width="50%">
         <!-- 内容主题区域 -->
         <span>
-                <el-form ref="addform" :model="addform" label-width="80px">
+                <el-form ref="addform"  :model="addform" label-width="80px">
                 <el-form-item label="工号">
                     <el-input v-model="addform.username"></el-input>
                 </el-form-item>
@@ -98,9 +100,6 @@
                         :props="{ expandTrigger: 'hover' }"
                         ></el-cascader>
                   </el-form-item>
-                <el-form-item label="专业">
-                   <el-input v-model="addform.major"></el-input>
-                </el-form-item>
                  <el-form-item label="手机号">
                     <el-input v-model="addform.phone"></el-input>
                 </el-form-item>
@@ -135,7 +134,7 @@
         <!-- 底部区域 -->
         <span slot="footer" class="dialog-footer">
             <el-button @click="addDialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="addTeacher" >确 定</el-button>
+            <el-button type="primary" @click="addTeacherPOST" >确 定</el-button>
         </span>
         </el-dialog>
 
@@ -146,7 +145,10 @@
         width="50%">
         <!-- 内容主题区域 -->
         <span>
-             <el-form ref="addform" :model="editForm" label-width="80px">
+             <el-form ref="editForm" :model="editForm" label-width="80px">
+               <el-form-item label="工号">
+                    <el-input v-model="editForm.username"></el-input>
+                </el-form-item>
                 <el-form-item label="姓名">
                     <el-input v-model="editForm.name"></el-input>
                 </el-form-item>
@@ -159,7 +161,7 @@
                  <el-form-item label="年龄">
                     <el-input v-model="editForm.age"></el-input>
                 </el-form-item>
-                 <el-form-item label="分类" :label-width="formLabelWidth">
+                <el-form-item label="学院" :label-width="formLabelWidth">
                       <el-cascader
                         v-model="value1"
                         :options="options"
@@ -169,23 +171,31 @@
                  <el-form-item label="手机号">
                     <el-input v-model="editForm.phone"></el-input>
                 </el-form-item>
-                <el-form-item label="地区">
-                   <el-input v-model="editForm.zone"></el-input>
+                <el-form-item label="邮箱">
+                   <el-input v-model="editForm.email"></el-input>
                 </el-form-item>
-                <el-form-item label="是否有教师资格证">
-                    <el-select v-model="editForm.teacher" placeholder="请选择">
-                    <el-option label="是" value="是"></el-option>
-                    <el-option label="否" value="否"></el-option>
-                    </el-select>
+                <el-form-item label="研究方向">
+                   <el-input v-model="editForm.interest"></el-input>
                 </el-form-item>
-                <el-form-item label="教学成就">
-                   <el-input v-model="editForm.achievement"></el-input>
+                <el-form-item label="个人简介精简版">
+                   <el-input v-model="editForm.introduce_brief"></el-input>
                 </el-form-item>
-                <el-form-item label="教学经历">
-                   <el-input v-model="editForm.describes"></el-input>
+                <el-form-item label="个人简介">
+                   <el-input v-model="editForm.introduce"></el-input>
+                </el-form-item>
+                <el-form-item label="个人荣誉">
+                    <el-input v-model="editForm.honor" ></el-input>
                 </el-form-item>
                 <el-form-item label="个人照片" prop="photo">
-                  <img :src="editForm.photo"></img>
+                        <el-upload
+                            class="avatar-uploader"
+                            action="http://localhost:8888/api/private/uploadphoto"
+                            :show-file-list="false"
+                            :on-success="handleAvatarSuccess"
+                            :before-upload="beforeAvatarUpload">
+                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                       </el-upload>
                  </el-form-item>
              </el-form>
         </span>
@@ -201,6 +211,20 @@
 <script>
 export default {
     data(){
+              //自定义手机号码验证
+        var checkPhone = (rule, value, callback) => {
+                if (!value) {
+                    return callback(new Error('手机号不能为空'));
+                } else {
+                    const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+                    //console.log(reg.test(value));
+                    if (reg.test(value)) {
+                        callback();
+                    } else {
+                        return callback(new Error('请输入正确的手机号'));
+                    }
+                }
+        };
         return{
             //获取用户列表的参数对象
             queryInfo:{
@@ -602,21 +626,20 @@ export default {
         }
     },
     methods:{
-         handleAvatarSuccess(res, file) {
+        handleAvatarSuccess(res, file) {
                     this.imageUrl = URL.createObjectURL(file.raw);
-                },
-                beforeAvatarUpload(file) {
-                    const isJPG = file.type === 'image/jpeg';
-                    const isLt2M = file.size / 1024 / 1024 < 2;
-
-                    if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
-                    }
-                    if (!isLt2M) {
-                    this.$message.error('上传头像图片大小不能超过 2MB!');
-                    }
-                    return isJPG && isLt2M;
-                },
+        },
+        beforeAvatarUpload(file) {
+          const isJPG = file.type === 'image/jpeg';
+          const isLt2M = file.size / 1024 / 1024 < 2;
+          if (!isJPG) {
+            this.$message.error('上传头像图片只能是 JPG 格式!');
+          }
+          if (!isLt2M) {
+            this.$message.error('上传头像图片大小不能超过 2MB!');
+          }
+          return isJPG && isLt2M;
+        },
         async getTeacherList(){
             //发送请求获取数据
            const {data:res} = await this.$http.get('/teachers',{params:this.queryInfo});
@@ -645,55 +668,59 @@ export default {
              this.getTeacherList();
         },
         //添加用户
-        async addTeacher(){
-            this.addDialogVisible = true;
-            this.addform.college = this.value[0];
-            this.addform.major = this.value[1];
-            console.log(this.addform)
-            // const{data:res}= await this.$http.post("/addteacher",this.addform)
-            // console.log(res);
-            // if(res.status!=200){
-            //    return  this.$message.error(res.msg);
-            // }
-            // if(res.status==200){
-            //     this.$message.success(res.errorMsg);
-            //     this.getTeacherList();
-            //     this.addDialogVisible = false
-            // }
-            
+        addTeacher(){
+                this.addDialogVisible = true;      
+        },
+        async addTeacherPOST(){
+                this.addform.college = this.value[0];
+                this.addform.major = this.value[1];
+                const{data:res}= await this.$http.post("/teachers",this.addform)
+                if(res.status!=200){
+                  return  this.$message.error(res.msg);
+                }
+                if(res.status==200){
+                     this.value = [];
+                    this.$message.success(res.msg);
+                    this.getTeacherList();
+                    this.addDialogVisible = false;
+                }
         },
         //修改对话框事件
         async showeditDialogVisible(id){
             //根据id查询用户信息
             // this.$http.get()
             const {data:res} = await this.$http.get("/editteacher",{params:{"id":id}});
-           if(!res.flag){
-                return this.$message.error(res.errorMsg);
+           if(res.status!=200){
+                return this.$message.error(res.msg);
             }
-            if(res.flag){
+            if(res.status==200){
                 this.editForm = res.data;
-                this.$message.success(res.errorMsg)     
+                this.value1[0] = this.editForm.college;
+                this.value1[1] = this.editForm.major;
+               // this.$message.success(res.msg)     
             }
             this.editDialogVisible = true;
             
         },
         async editTeacher(){
-          console.log(this.value1)
+         // console.log(this.value1)
           if(this.value1.length == 0){
-            return   this.$message.error("请选择年级");
+            return   this.$message.error("请选择学院");
           }
-            this.editForm.class1 = this.value1[0]+'/'+this.value1[1]+'/'+this.value1[2];
-            console.log(this.editForm)
-            const {data:res} = await this.$http.post("/editteacher",this.editForm);
-            console.log(res);
-            if(!res.flag){
-                return this.$message.error(res.errorMsg);
+          this.editForm.college = this.value1[0];
+          this.editForm.major = this.value1[1];
+         // console.log(this.editForm);
+          const {data:res} = await this.$http.post("/editteacher",this.editForm);
+         // console.log(res);
+          if(res.status!=200){
+                return this.$message.error(res.msg);
             }
-            if(res.flag){
-                this.$message.success(res.errorMsg)
-                this.editDialogVisible = false;
-                this.getTeacherList();
-            }
+          if(res.status==200){
+              this.value1 = [];
+              this.$message.success(res.msg)
+              this.editDialogVisible = false;
+              this.getTeacherList();
+          }
         },
         //根据ID删除用户
         async removeTeacherById(id){
@@ -709,14 +736,19 @@ export default {
           }
            if(confirmResult == 'confirm'){
               const {data:res} = await this.$http.get("/deleteteacher",{params:{"id":id}})
-              if(!res.flag){
-                return this.$message.error(res.errorMsg);
+              if(res.status!=200){
+                return this.$message.error(res.msg);
             }
-            if(res.flag){
-                this.$message.success(res.errorMsg)
+            if(res.status==200){
+                this.$message.success(res.msg)
                 this.getTeacherList();
             }
           }
+        },
+       // 跳转到详情页面
+        getDetails(id){
+            this.$router.push({path:"/userdetails",query:{id:id,type:'teacher'}});
+            //console.log(id);
         },
                 //条件筛选查询
        async handleChange(){

@@ -291,7 +291,7 @@ export default {
         },
         //监听switch开关的改变
        async userStateChange(userinfo){
-            console.log(userinfo);
+           // console.log(userinfo);
            this.updateTypeForm = userinfo;
           //  发送请求改变用户状态
            const {data:res} = await this.$http.post("/edituser",this.updateTypeForm);

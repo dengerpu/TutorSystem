@@ -8,6 +8,7 @@ import Welcome from '../components/Welcome.vue'
 import Users from  '../components/user/Users.vue'
 import Students from '../components/user/Studens.vue'
 import Teachers from '../components/user/Teachers.vue'
+import UserDetails from '../components/user/UserDetails.vue'
 import Rights from '../components/power/Rights.vue'
 import Roles from '../components/power/Roles.vue'
 import Videos from '../components/course/Videos.vue'
@@ -35,6 +36,7 @@ const routes = [
       {path:'/users',component:Users},
       {path:'/students',component:Students},
       {path:'/teachers',component:Teachers},
+      {path:'/userdetails',component:UserDetails},
       {path:'/rights',component:Rights},
       {path:'/roles',component:Roles},
       {path:'/videos',component:Videos},
