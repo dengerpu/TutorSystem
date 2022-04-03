@@ -42,7 +42,9 @@
                 <el-table-column prop="email" label="邮箱"></el-table-column>
                 <el-table-column prop="phone" label="联系方式"></el-table-column>
                 <el-table-column prop="" label="更多">
-                    <a>详情</a>
+                    <template slot-scope="scope">
+                      <el-link type="primary" @click="getDetails(scope.row.id)">详情</el-link>
+                    </template>
                 </el-table-column>
                 <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
@@ -743,6 +745,11 @@ export default {
                 this.getStudentList();
             }
           }
+        },
+         // 跳转到详情页面
+        getDetails(id){
+            this.$router.push({path:"/userdetails",query:{id:id,type:'student'}});
+            //console.log(id);
         },
                 //条件筛选查询
        async handleChange(){

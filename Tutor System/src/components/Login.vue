@@ -81,7 +81,14 @@
                     <el-option label="管理员" value="admin"></el-option>
                   </el-select>
                 </el-form-item>
-
+                <el-form-item prop="code"  style="margin-left:-100px;display:flex;">
+                    <el-col :span="10" style="float:left;">
+                       <el-input type="text" v-model="code" placeholder="请输入验证码"></el-input>
+                    </el-col>
+                    <el-col :span="10" style="float:right;">
+                          <img :src="imageUrl" @click="getCode"></img>
+                    </el-col>
+                </el-form-item>
               </div>
                 <el-row :gutter="1">
 
@@ -104,11 +111,8 @@
                   </el-col>
 
                 </el-row>
-
                 <el-row :span="12" :offset="6">
-                  <el-col>
-                    <el-button
-                      type="primary"
+                  <el-col> <el-button type="primary"
                       @click.prevent="submitForm('formData')"
                       style="width:100%; font-size:18px"
                     >
@@ -142,6 +146,8 @@ export default {
         password: "",
         type:[],
       },
+      code:"",
+      imageUrl:"",
       responseResult: [],
       rules: {
          username: [
@@ -181,6 +187,7 @@ export default {
           },
         ],
         type: [{ required: true, message: "请选择用户", trigger: "blur" }],
+        code: [{ required: false, message: "请选择验证码", trigger: "blur" }],
       },
     };
   },
@@ -190,7 +197,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          console.log(this.formData);
+         // console.log(this.formData);
            const {data: res}= await this.$http.post('/login', {
                 username: this.formData.username,
                 password: this.formData.password,
@@ -209,11 +216,24 @@ export default {
            }
         })
       },
+      //获取验证码
+      async getCode(){
+        console.log("执行了....");
+        let res= await this.$http.get('/verify/getcode',{
+        responseType: 'blob'
+        })
+        this.imageUrl = window.URL.createObjectURL(res.data)
+
+        //this.imageUrl=window.URL.createObjectURL(blob)
+        //console.log(blob);
+       
+      }
+  },
     created(){
+      this.getCode();
       const _this = this;
       _this.formData.username = window.sessionStorage.getItem("loginuser");
       _this.formData.type = window.sessionStorage.getItem("logintype");
-    }
   }
 }
  
@@ -238,5 +258,9 @@ export default {
 .row-bg {
   padding: 10px 0;
   /* background-color: #f9fafc; */
+}
+.line{
+  margin-left: 20px;
+  
 }
 </style>
