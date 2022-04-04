@@ -66,16 +66,22 @@
                             <span>权限管理</span>
                         </template>
                         <!-- 二级菜单 -->
-                        <el-menu-item index="/roles" @click="saveNavState('/roles')">
+                        <el-menu-item index="/choice" @click="saveNavState('/choice')">
                             <template slot="title">
                                 <i class="el-icon-menu"></i>
-                                <span>角色列表</span>
+                                <span>分配管理</span>
                             </template>
                         </el-menu-item>
-                        <el-menu-item index="/rights" @click="saveNavState('/rights')">
+                        <el-menu-item index="/tutorchoice" @click="saveNavState('/tutorchoice')">
                             <template slot="title">
                                 <i class="el-icon-menu"></i>
-                                <span>权限列表</span>
+                                <span>选择学生</span>
+                            </template>
+                        </el-menu-item>
+                        <el-menu-item index="/studentchoice" @click="saveNavState('/studentchoice')">
+                            <template slot="title">
+                                <i class="el-icon-menu"></i>
+                                <span>选择老师</span>
                             </template>
                         </el-menu-item>
                     </el-submenu>

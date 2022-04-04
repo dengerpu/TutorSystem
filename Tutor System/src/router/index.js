@@ -9,8 +9,9 @@ import Users from  '../components/user/Users.vue'
 import Students from '../components/user/Studens.vue'
 import Teachers from '../components/user/Teachers.vue'
 import UserDetails from '../components/user/UserDetails.vue'
-import Rights from '../components/power/Rights.vue'
-import Roles from '../components/power/Roles.vue'
+import AdminChoice from '../components/assign/AdminChoice.vue'
+import StudentChoicie from '../components/assign/StudentChoice.vue'
+import TutorChoice from '../components/assign/TutorChoice.vue'
 import Videos from '../components/course/Videos.vue'
 import Texts from '../components/course/Texts.vue'
 import textlist from '../components/course/TextList.vue'
@@ -37,8 +38,10 @@ const routes = [
       {path:'/students',component:Students},
       {path:'/teachers',component:Teachers},
       {path:'/userdetails',component:UserDetails},
-      {path:'/rights',component:Rights},
-      {path:'/roles',component:Roles},
+      {path:'/choice',component:AdminChoice},
+      {path:'/studentchoice',component:StudentChoicie},
+      {path:'/tutorchoice',component:TutorChoice},
+      {path:'/videos',component:Videos},
       {path:'/videos',component:Videos},
       {path:'/texts',component:Texts},
       {path:'/textlist',component:textlist},

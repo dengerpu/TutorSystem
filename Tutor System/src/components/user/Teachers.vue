@@ -121,7 +121,8 @@
                 <el-form-item label="个人照片" prop="photo">
                         <el-upload
                             class="avatar-uploader"
-                            action="http://localhost:8888/api/private/uploadphoto"
+                            action="http://localhost:8888/upload"
+                            accept="image/jpeg,image/gif,image/png,image/bmp"
                             :show-file-list="false"
                             :on-success="handleAvatarSuccess"
                             :before-upload="beforeAvatarUpload">
@@ -189,7 +190,8 @@
                 <el-form-item label="个人照片" prop="photo">
                         <el-upload
                             class="avatar-uploader"
-                            action="http://localhost:8888/api/private/uploadphoto"
+                            action="http://localhost:8888/upload"
+                            accept="image/jpeg,image/gif,image/png,image/bmp"
                             :show-file-list="false"
                             :on-success="handleAvatarSuccess"
                             :before-upload="beforeAvatarUpload">
@@ -244,6 +246,7 @@ export default {
             total:0,  //总数据数
             teacherlist: [],//用户数据
             imageUrl: '',
+            uploadImageUrl:'',//上传文件的路径
             addDialogVisible:false, //控制添加对话框的显示与隐藏
             editDialogVisible:false,
             editForm:{
@@ -627,18 +630,27 @@ export default {
     },
     methods:{
         handleAvatarSuccess(res, file) {
-                    this.imageUrl = URL.createObjectURL(file.raw);
+            this.imageUrl = URL.createObjectURL(file.raw);
+            if(res.status==200){
+                this.uploadImageUrl = "http://localhost:8888"+res.data;
+                return this.$message.success("上传成功");
+            }else{
+                return this.$message.error("上传失败");
+            }
         },
         beforeAvatarUpload(file) {
-          const isJPG = file.type === 'image/jpeg';
-          const isLt2M = file.size / 1024 / 1024 < 2;
-          if (!isJPG) {
-            this.$message.error('上传头像图片只能是 JPG 格式!');
-          }
-          if (!isLt2M) {
-            this.$message.error('上传头像图片大小不能超过 2MB!');
-          }
-          return isJPG && isLt2M;
+            const isJPG = file.type === 'image/jpeg';
+            const isGIF = file.type === 'image/gif';
+            const isPNG = file.type === 'image/png';
+            const isBMP = file.type === 'image/bmp';
+            const size = file.size / 1024 / 1024 < 10;
+            if (!isJPG && !isGIF && !isPNG && !isBMP) {
+                this.common.errorTip('上传图片必须是JPG/GIF/PNG/BMP 格式!');
+            }
+            if (!size) {
+              this.$message.error('上传头像图片大小不能超过 10MB!');
+            }
+            return (isJPG || isBMP || isGIF || isPNG) &&size;
         },
         async getTeacherList(){
             //发送请求获取数据
@@ -674,6 +686,7 @@ export default {
         async addTeacherPOST(){
                 this.addform.college = this.value[0];
                 this.addform.major = this.value[1];
+                this.addform.image = this.uploadImageUrl;
                 const{data:res}= await this.$http.post("/teachers",this.addform)
                 if(res.status!=200){
                   return  this.$message.error(res.msg);
@@ -709,6 +722,7 @@ export default {
           }
           this.editForm.college = this.value1[0];
           this.editForm.major = this.value1[1];
+          this.editForm.image = this.uploadImageUrl;
          // console.log(this.editForm);
           const {data:res} = await this.$http.post("/editteacher",this.editForm);
          // console.log(res);
