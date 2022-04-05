@@ -108,9 +108,6 @@
                 <el-form-item label="研究方向">
                    <el-input v-model="addform.interest"></el-input>
                 </el-form-item>
-                <el-form-item label="个人简介精简版">
-                   <el-input v-model="addform.introduce_brief"></el-input>
-                </el-form-item>
                 <el-form-item label="个人简介">
                    <el-input v-model="addform.introduce"></el-input>
                 </el-form-item>
@@ -176,9 +173,6 @@
                 </el-form-item>
                 <el-form-item label="研究方向">
                    <el-input v-model="editForm.interest"></el-input>
-                </el-form-item>
-                <el-form-item label="个人简介精简版">
-                   <el-input v-model="editForm.introduce_brief"></el-input>
                 </el-form-item>
                 <el-form-item label="个人简介">
                    <el-input v-model="editForm.introduce"></el-input>

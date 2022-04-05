@@ -16,7 +16,7 @@
                     <el-button  :type="buttontype2" @click="getStudent">学生</el-button>
                 </el-col>
                 <el-col :span="4">
-                    <el-button type="primary" @click="addTeacher">添加教师</el-button>
+                    <el-button type="primary" >添加教师</el-button>
                 </el-col>
             </el-row>
 
@@ -27,18 +27,23 @@
                 <el-table-column prop="college" label="学院" ></el-table-column>
                 <el-table-column prop="major" label="专业" ></el-table-column>
                 <el-table-column v-if="buttontype1=='success'" prop="quota" label="招生名额" ></el-table-column>
-                <el-table-column v-if="buttontype1=='success'" prop="quota" label="已录名额" ></el-table-column>
-                <el-table-column v-if="buttontype1=='success'" prop="quota" label="空余名额" ></el-table-column>
+                <el-table-column v-if="buttontype1=='success'" prop="already" label="已录名额" ></el-table-column>
+                <el-table-column v-if="buttontype1=='success'" label="空余名额" >
+                    <template slot-scope="scope">
+                      {{scope.row.quota - scope.row.already}}
+                    </template>
+                </el-table-column>
                 <el-table-column v-if="buttontype2=='success'" prop="turtor" label="导师" ></el-table-column>
                 <el-table-column prop="" label="更多">
                     <template slot-scope="scope">
                       <el-link type="primary" @click="getDetails(scope.row.id)">详情</el-link>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="180px">
+                <el-table-column label="操作" width="260px">
                     <template slot-scope="scope">
-                       <el-button type="primary" v-if="buttontype1=='success'" icon="el-icon-s-tools" @click="AssignStudent">分配学生</el-button>
-                        <el-button type="primary" v-if="buttontype2=='success'" icon="el-icon-s-tools" @click="AssignTurtor">分配导师</el-button>
+                       <el-button type="warning" v-if="buttontype1=='success'" size="mini" @click="AssignQuota(scope.row.id)">分配名额</el-button>
+                       <el-button type="primary" v-if="buttontype1=='success'" size="mini" icon="el-icon-s-tools" @click="AssignStudent(scope.row.id)">分配学生</el-button>
+                        <el-button type="primary" v-if="buttontype2=='success'" icon="el-icon-s-tools" @click="AssignTurtor(scope.row.id)">分配导师</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -56,33 +61,67 @@
 
         </el-card>
 
-        <!-- 添加教师的对话框 -->
+        <!-- 更改老师招生名额的对话框 -->
+        <el-dialog
+        title="分配学生"
+        :visible.sync="addQuotaVisible"
+        width="50%">
+        <!-- 内容主题区域 -->
+        <span>
+               
+                <el-form  label-width="80px">
+                <el-form-item label="招生名额" :label-width="formLabelWidth">
+                  <el-select v-model="quota" placeholder="请选择名额">
+                    <el-option
+                      v-for="item in quotaSelect"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+            </el-form>
+        </span>
+        <!-- 底部区域 -->
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="addQuotaVisible = false">取 消</el-button>
+            <el-button type="primary" @click="AssignQuotaPOST" >确 定</el-button>
+        </span>
+        </el-dialog>
+
+        <!-- 分配学生的对话框 -->
         <el-dialog
         title="分配学生"
         :visible.sync="addDialogVisible"
         width="50%">
         <!-- 内容主题区域 -->
         <span>
+               
+                <el-form ref="addform"  :model="addform" label-width="80px">
                 <el-form-item label="学院" :label-width="formLabelWidth">
                       <el-cascader
-                        v-model="value"
+                        v-model="queryValue"
                         :options="options"
                         :props="{ expandTrigger: 'hover' }"
+                        @change="getStudentInfo"
                         ></el-cascader>
                 </el-form-item>
-                <el-form ref="addform"  :model="addform" label-width="80px">
-                <el-form-item label="工号">
-                    <el-input v-model="addform.username"></el-input>
-                </el-form-item>
-                <el-form-item label="姓名">
-                    <el-input v-model="addform.name"></el-input>
+                <el-form-item label="学生" :label-width="formLabelWidth">
+                  <el-select v-model="StudentId" placeholder="请选择学生">
+                    <el-option
+                      v-for="item in stuList"
+                      :key="item.id"
+                      :label="item.username+item.name"
+                      :value="item.id">
+                    </el-option>
+                  </el-select>
                 </el-form-item>
             </el-form>
         </span>
         <!-- 底部区域 -->
         <span slot="footer" class="dialog-footer">
             <el-button @click="addDialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="addTeacherPOST" >确 定</el-button>
+            <el-button type="primary" @click="AssignStudentPOST" >确 定</el-button>
         </span>
         </el-dialog>
 
@@ -105,7 +144,7 @@
         <!-- 底部区域 -->
         <span slot="footer" class="dialog-footer">
             <el-button @click="editDialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="editTeacher">确 定</el-button>
+            <el-button type="primary" @click="">确 定</el-button>
         </span>
         </el-dialog>
     </div>
@@ -126,14 +165,24 @@ export default {
                 pagenum:1,  //当前页数
                 pagesize:5  //每页显示多少条数据
             },
+            queryCollegeAndMajor:{
+              college:'',
+              major:'',
+              pagenum:1,  //当前页数
+              pagesize:5  //每页显示多少条数据
+            },
             buttontype1:'success',
             buttontype2:'',
             value:[],
+            queryValue:[],
             value1:[],//用于修改
             value2:[],//用于筛选查询
             formLabelWidth: '80px',
             total:0,  //总数据数
             list: [],//用户数据
+            stuList:[],
+            StudentId:'',
+            addQuotaVisible:false,  //控制分配导师名额对话框的显示与隐藏
             addDialogVisible:false, //控制添加对话框的显示与隐藏
             editDialogVisible:false,
             editForm:{
@@ -141,6 +190,46 @@ export default {
              addform: {  //添加的用户信息
              college:''
             },
+            editQuota:{ //修改招生名额提交的表单
+              id:'',
+              quota:'',
+              sid:'',
+              tid:''
+            },
+            quota:6,//招生名额
+            quotaSelect: [{
+                value: 1,
+                label: '1'
+              }, {
+                value: 2,
+                label: '2'
+              }, {
+                value: 3,
+                label: '3'
+              }, {
+                value: 4,
+                label: '4'
+              }, {
+                value: 5,
+                label: '5'
+              },
+              {
+                value: 6,
+                label: '6'
+              }, {
+                value: 7,
+                label: '7'
+              }, {
+                value: 8,
+                label: '8'
+              }, {
+                value: 9,
+                label: '9'
+              }, {
+                value: 10,
+                label: '10'
+              }
+              ],
             options: [
               {
                 label: '机械工程学院',
@@ -518,8 +607,8 @@ export default {
     methods:{
         async getTeacherList(){
             //发送请求获取数据
-           const {data:res} = await this.$http.get('/teachers',{params:this.queryInfo});
-           //console.log(res);
+           const {data:res} = await this.$http.get('/teas',{params:this.queryInfo});
+           console.log(res);
            if(res.status!=200){
                 this.list = [];
                 this.total = 0;
@@ -561,119 +650,96 @@ export default {
             //console.log(newSize);
             this.queryInfo.pagesize = newSize;
             //再次调用接口查找用户
-            this.getTeacherList();
+            if(this.buttontype1 == "success"){
+               this.getTeacherList();
+            }
+            if(this.buttontype2 =="success"){
+              this.getStudentList();
+            }
+           
         },
         //监听页码值改变的事件
         handleCurrentChange(newPage){
             //console.log(newPage);
             this.queryInfo.pagenum = newPage;
              //再次调用接口查找用户
-             this.getTeacherList();
+            if(this.buttontype1 == "success"){
+               this.getTeacherList();
+            }
+            if(this.buttontype2 =="success"){
+              this.getStudentList();
+            }
+        },
+        AssignQuota(tid){
+          this.editQuota.id = tid;
+          this.getQuota(tid);
+          this.addQuotaVisible = true;
+        },
+        //获取老师招生名额
+        async getQuota(tid){
+          const {data:res} = await this.$http.get("/editquota",{params:{"tid":tid}});
+          if(res.status!=200){
+            return  this.$message.error(res.msg);
+          }
+          if(res.status==200){
+            this.quota = res.data;
+          }
+        },
+        //修改招生名额
+        async AssignQuotaPOST(){
+          this.editQuota.quota = this.quota;
+         // console.log(this.editQuota);
+          const {data:res} = await this.$http.post("/editquota",this.editQuota);
+          if(res.status!=200){
+              return  this.$message.error(res.msg);
+          }
+          if(res.status==200){
+            this.addQuotaVisible = false;
+            if(this.buttontype1 == "success"){
+               this.getTeacherList();
+            }
+            if(this.buttontype2 =="success"){
+              this.getStudentList();
+            }
+             this.$messge.success(res.msg);
+          }
         },
         //为导师分配学生
-        AssignStudent(){
-          this.addDialogVisible = true;      
+        AssignStudent(id){
+          this.editQuota.tid = id;
+          this.addDialogVisible = true;
         },
-        async addTeacherPOST(){
-                this.addform.college = this.value[0];
-                this.addform.major = this.value[1];
-                this.addform.image = this.uploadImageUrl;
-                const{data:res}= await this.$http.post("/teachers",this.addform)
-                if(res.status!=200){
-                  return  this.$message.error(res.msg);
-                }
-                if(res.status==200){
-                     this.value = [];
-                    this.$message.success(res.msg);
-                    this.getTeacherList();
-                    this.addDialogVisible = false;
-                }
-        },
-        //修改对话框事件
-        async showeditDialogVisible(id){
-            //根据id查询用户信息
-            // this.$http.get()
-            const {data:res} = await this.$http.get("/editteacher",{params:{"id":id}});
-           if(res.status!=200){
-                return this.$message.error(res.msg);
+        async AssignStudentPOST(){
+          this.editQuota.sid = this.StudentId;
+           const {data:res} = await this.$http.post("/relationship",this.editQuota);
+            if(res.status!=200){
+                return  this.$message.error(res.msg);
             }
-            if(res.status==200){
-                this.editForm = res.data;
-                this.value1[0] = this.editForm.college;
-                this.value1[1] = this.editForm.major;
-               // this.$message.success(res.msg)     
+             if(res.status==200){
+              this.addDialogVisible = false;
+              if(this.buttontype1 == "success"){
+                this.getTeacherList();
+              }
+              if(this.buttontype2 =="success"){
+                this.getStudentList();
+              }
+              this.$messge.success(res.msg);
             }
-            this.editDialogVisible = true;
             
         },
-        async editTeacher(){
-         // console.log(this.value1)
-          if(this.value1.length == 0){
-            return   this.$message.error("请选择学院");
-          }
-          this.editForm.college = this.value1[0];
-          this.editForm.major = this.value1[1];
-          this.editForm.image = this.uploadImageUrl;
-         // console.log(this.editForm);
-          const {data:res} = await this.$http.post("/editteacher",this.editForm);
-         // console.log(res);
-          if(res.status!=200){
-                return this.$message.error(res.msg);
-            }
-          if(res.status==200){
-              this.value1 = [];
-              this.$message.success(res.msg)
-              this.editDialogVisible = false;
-              this.getTeacherList();
-          }
-        },
-        //根据ID删除用户
-        async removeTeacherById(id){
-            const confirmResult = await this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-            }).catch(err=>err);  //相当于err => {return err}
-        
-          // console.log(confirmResult)
-          if(confirmResult != 'confirm'){
-              this.$message.info('已取消删除')
-          }
-           if(confirmResult == 'confirm'){
-              const {data:res} = await this.$http.get("/deleteteacher",{params:{"id":id}})
-              if(res.status!=200){
-                return this.$message.error(res.msg);
+        //根据学院获取学生信息
+        async getStudentInfo(){
+            this.queryCollegeAndMajor.college = this.queryValue[0];
+            this.queryCollegeAndMajor.major = this.queryValue[1];
+            const {data:res} = await this.$http.get("/stus",{params:this.queryCollegeAndMajor});
+            if(res.status!=200){
+                  return  this.$message.error(res.msg);
             }
             if(res.status==200){
-                this.$message.success(res.msg)
-                this.getTeacherList();
+                this.stuList = res.data.list;
+                this.$message.success(res.msg);
             }
-          }
-        },
-       // 跳转到详情页面
-        getDetails(id){
-            this.$router.push({path:"/userdetails",query:{id:id,type:'teacher'}});
-            //console.log(id);
-        },
-                //条件筛选查询
-       async handleChange(){
-         this.queryInfo1.query = this.value2[0]+'/'+this.value2[1];
-         console.log(this.queryInfo1)
-         //发送请求获取数据
-          //  const {data:res} = await this.$http.get('/queryteacher',{params:this.queryInfo1});
-          //  console.log(res)
-          //  if(!res.flag){
-          //           this.teacherlist = [];
-          //           this.total = 0;
-          //           return this.$message.error(res.errorMsg)
-          //       }
-          //       if(res.flag){
-          //           this.teacherlist = res.data.users;
-          //           this.total = res.data.totalpage;
-                    
-          //       }
-       }
-
+        } 
     },
     created(){
         this.getTeacherList();
