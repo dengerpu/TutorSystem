@@ -27,8 +27,8 @@
                              <span>年龄：{{userInfo.age}}</span> 
                              <span>学院：{{userInfo.college}}</span> 
                              <span>专业：{{userInfo.major}}</span> 
-                             <span>毕业学校：北京大学</span> 
-                             <span>研究方向：{{userInfo.interest}}</span> 
+                             <span v-if="type=='teacher'">毕业学校：北京大学</span> 
+                             <span v-if="type=='teacher'">研究方向：{{userInfo.interest}}</span> 
                         </div>
                     </div>
                     <div class="info_link">

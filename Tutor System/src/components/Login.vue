@@ -195,26 +195,30 @@ export default {
   methods: {
     // 登录
     submitForm(formName) {
-      this.$refs[formName].validate(async valid => {
-        if (valid) {
-         // console.log(this.formData);
-           const {data: res}= await this.$http.post('/login', {
-                username: this.formData.username,
-                password: this.formData.password,
-                type: this.formData.type
-                }); 
-                console.log(res);
-                if(res.status===200){
-                  this.$message.success("登陆成功");
-                  //1.2token只应在当前网站打开期间生效，所以将token保存在sessionStorage中
+        //1.2token只应在当前网站打开期间生效，所以将token保存在sessionStorage中
                   window.sessionStorage.setItem("token","123456");
                   //2.通过编程式导航跳到后台主页路由地址是/home
                   this.$router.push("/home")
-                }else{
-                  return this.$message.error(res.msg);
-                }
-           }
-        })
+      // this.$refs[formName].validate(async valid => {
+      //   if (valid) {
+      //    // console.log(this.formData);
+      //      const {data: res}= await this.$http.post('/login', {
+      //           username: this.formData.username,
+      //           password: this.formData.password,
+      //           type: this.formData.type
+      //           }); 
+      //           console.log(res);
+      //           if(res.status===200){
+      //             this.$message.success("登陆成功");
+      //             //1.2token只应在当前网站打开期间生效，所以将token保存在sessionStorage中
+      //             window.sessionStorage.setItem("token","123456");
+      //             //2.通过编程式导航跳到后台主页路由地址是/home
+      //             this.$router.push("/home")
+      //           }else{
+      //             return this.$message.error(res.msg);
+      //           }
+      //      }
+      //   })
       },
       //获取验证码
       async getCode(){

@@ -25,6 +25,19 @@
                             <!-- 文字 -->
                             <span>首页</span>
                         </template>
+                         <!-- 二级菜单 -->
+                        <el-menu-item index="/psersoncenter" @click="saveNavState('/psersoncenter')">
+                            <template slot="title">
+                                <i class="el-icon-menu"></i>
+                                <span>个人中心</span>
+                            </template>
+                        </el-menu-item>
+                        <el-menu-item index="/securitycenter" @click="saveNavState('/securitycenter')">
+                            <template slot="title">
+                                <i class="el-icon-menu"></i>
+                                <span>安全中心</span>
+                            </template>
+                        </el-menu-item>
                     </el-submenu>
                     <!-- 一级菜单 -->
                     <el-submenu index="1">
@@ -70,6 +83,12 @@
                             <template slot="title">
                                 <i class="el-icon-menu"></i>
                                 <span>分配管理</span>
+                            </template>
+                        </el-menu-item>
+                        <el-menu-item index="/applayrecord" @click="saveNavState('/applayrecord')">
+                            <template slot="title">
+                                <i class="el-icon-menu"></i>
+                                <span>申请记录</span>
                             </template>
                         </el-menu-item>
                         <el-menu-item index="/tutorchoice" @click="saveNavState('/tutorchoice')">
@@ -121,7 +140,7 @@
                             <!-- 图标 -->
                             <i class="iconfont icon-danju"></i>
                             <!-- 文字 -->
-                            <span>订单管理</span>
+                            <span>通知管理</span>
                         </template>
                         <!-- 二级菜单 -->
                         <!-- <el-menu-item index="41">
@@ -138,15 +157,20 @@
                             <!-- 图标 -->
                             <i class="iconfont icon-baobiao"></i>
                             <!-- 文字 -->
-                            <span>数据统计</span>
+                            <span>通知管理</span>
                         </template>
-                        <!-- 二级菜单 -->
-                        <!-- <el-menu-item index="51">
+                         <el-menu-item index="/notice" @click="saveNavState('/notice')">
                             <template slot="title">
                                 <i class="el-icon-menu"></i>
-                                <span>导航一</span>
+                                <span>发布通知</span>
                             </template>
-                        </el-menu-item> -->
+                        </el-menu-item>
+                        <el-menu-item index="/noticeall" @click="saveNavState('/noticeall')">
+                                <template slot="title">
+                                    <i class="el-icon-menu"></i>
+                                    <span>查看通知</span>
+                                </template>
+                        </el-menu-item>
                     </el-submenu>
                 
                 </el-menu>

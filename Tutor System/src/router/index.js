@@ -12,9 +12,12 @@ import UserDetails from '../components/user/UserDetails.vue'
 import AdminChoice from '../components/assign/AdminChoice.vue'
 import StudentChoicie from '../components/assign/StudentChoice.vue'
 import TutorChoice from '../components/assign/TutorChoice.vue'
-import Videos from '../components/course/Videos.vue'
-import Texts from '../components/course/Texts.vue'
-import textlist from '../components/course/TextList.vue'
+import ApplationRecord from '../components/assign/ApplationRecord.vue'
+import PersonCenter from '../components/index/PersonalCenter.vue'
+import SecurityCenter from '../components/index/SecurityCenter.vue'
+import NoticeMange from '../components/noticeManger/NoticeMange.vue'
+import NoticeShowALL from '../components/noticeManger/NoticeShowAll.vue'
+import TimeTable from '../components/course/Timetable.vue'
 
 
 Vue.use(VueRouter)
@@ -41,11 +44,12 @@ const routes = [
       {path:'/choice',component:AdminChoice},
       {path:'/studentchoice',component:StudentChoicie},
       {path:'/tutorchoice',component:TutorChoice},
-      {path:'/videos',component:Videos},
-      {path:'/videos',component:Videos},
-      {path:'/texts',component:Texts},
-      {path:'/textlist',component:textlist},
-
+      {path:'/applayrecord',component:ApplationRecord},
+      {path:'/psersoncenter',component:PersonCenter},
+      {path:'/securitycenter',component:SecurityCenter},
+      {path:'/timetable',component:TimeTable},
+      {path:'/notice',component:NoticeMange},
+      {path:'/noticeall',component:NoticeShowALL}
     ]}
 ]
 

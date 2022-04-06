@@ -36,14 +36,15 @@
                 <el-table-column v-if="buttontype2=='success'" prop="turtor" label="导师" ></el-table-column>
                 <el-table-column prop="" label="更多">
                     <template slot-scope="scope">
-                      <el-link type="primary" @click="getDetails(scope.row.id)">详情</el-link>
+                      <el-link type="primary" v-if="buttontype1=='success'" @click="getTeacherDetails(scope.row.id)">详情</el-link>
+                      <el-link type="primary" v-if="buttontype2=='success'" @click="getStudentDetails(scope.row.id)">详情</el-link>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="260px">
                     <template slot-scope="scope">
                        <el-button type="warning" v-if="buttontype1=='success'" size="mini" @click="AssignQuota(scope.row.id)">分配名额</el-button>
                        <el-button type="primary" v-if="buttontype1=='success'" size="mini" icon="el-icon-s-tools" @click="AssignStudent(scope.row.id)">分配学生</el-button>
-                        <el-button type="primary" v-if="buttontype2=='success'" icon="el-icon-s-tools" @click="AssignTurtor(scope.row.id)">分配导师</el-button>
+                        <el-button type="warning" v-if="buttontype2=='success'" icon="el-icon-s-tools" @click="AssignTurtor(scope.row.id)">分配导师</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -127,24 +128,36 @@
 
          <!-- 修改用户的对话框 -->
         <el-dialog
-        title="修改用户"
-        :visible.sync="editDialogVisible"
+        title="分配导师"
+        :visible.sync="editTutorVisible"
         width="50%">
         <!-- 内容主题区域 -->
         <span>
              <el-form ref="editForm" :model="editForm" label-width="80px">
-               <el-form-item label="工号">
-                    <el-input v-model="editForm.username"></el-input>
+               <el-form-item label="学院" :label-width="formLabelWidth">
+                      <el-cascader
+                        v-model="queryTeacherValue"
+                        :options="options1"
+                        :props="{ expandTrigger: 'hover' }"
+                        @change="getTeacherInfo"
+                        ></el-cascader>
                 </el-form-item>
-                <el-form-item label="姓名">
-                    <el-input v-model="editForm.name"></el-input>
+                <el-form-item label="老师" :label-width="formLabelWidth">
+                  <el-select v-model="TeacherId" placeholder="请选择老师">
+                    <el-option
+                      v-for="item in teaList"
+                      :key="item.id"
+                      :label="item.username+item.name"
+                      :value="item.id">
+                    </el-option>
+                  </el-select>
                 </el-form-item>
              </el-form>
         </span>
         <!-- 底部区域 -->
         <span slot="footer" class="dialog-footer">
-            <el-button @click="editDialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="">确 定</el-button>
+            <el-button @click="editTutorVisible = false">取 消</el-button>
+            <el-button type="primary" @click="AssignTurtorPOST">确 定</el-button>
         </span>
         </el-dialog>
     </div>
@@ -160,11 +173,6 @@ export default {
                 pagenum:1,  //当前页数
                 pagesize:5  //每页显示多少条数据
             },
-            queryInfo1:{
-                query:'',
-                pagenum:1,  //当前页数
-                pagesize:5  //每页显示多少条数据
-            },
             queryCollegeAndMajor:{
               college:'',
               major:'',
@@ -175,16 +183,19 @@ export default {
             buttontype2:'',
             value:[],
             queryValue:[],
+            queryTeacherValue:[],
             value1:[],//用于修改
             value2:[],//用于筛选查询
             formLabelWidth: '80px',
             total:0,  //总数据数
             list: [],//用户数据
             stuList:[],
+            teaList:[],
             StudentId:'',
+            TeacherId:'',
             addQuotaVisible:false,  //控制分配导师名额对话框的显示与隐藏
             addDialogVisible:false, //控制添加对话框的显示与隐藏
-            editDialogVisible:false,
+            editTutorVisible:false,
             editForm:{
             }, //查询到的用户信息
              addform: {  //添加的用户信息
@@ -193,6 +204,10 @@ export default {
             editQuota:{ //修改招生名额提交的表单
               id:'',
               quota:'',
+              sid:'',
+              tid:''
+            },
+            assignTurtor:{
               sid:'',
               tid:''
             },
@@ -230,7 +245,61 @@ export default {
                 label: '10'
               }
               ],
-            options: [
+            options1: [
+              {
+                label: '机械工程学院',
+                value: '机械工程学院',
+              },
+              {
+                label: '电子信息与电气工程学院',
+                value: '电子信息与电气工程学院',
+              },
+              {
+                label: '计算机科学与信息工程学院',
+                value: '计算机科学与信息工程学院',
+              },
+              {
+                label: '土木与建筑工程学院',
+                value: '土木与建筑工程学院',
+              },
+              {
+                label: '化学与环境工程学院',
+                value: '化学与环境工程学院',
+              },
+              {
+                label: '生物与食品工程学院',
+                value: '生物与食品工程学院',
+              },
+              {
+                label: '数理学院',
+                value: '数理学院',
+              },
+              {
+                label: '飞行学院',
+                value: '飞行学院',
+              },
+              {
+                label: '经济管理学院',
+                value: '经济管理学院',
+              },
+              {
+                label: '文法学院',
+                value: '文法学院',
+              },
+              {
+                label: '外国语学院',
+                value: '外国语学院',
+              },
+              {
+                label: '艺术设计学院',
+                value: '艺术设计学院',
+              },
+              {
+                label: '国际教育学院',
+                value: '国际教育学院',
+              }
+			      ],
+             options: [
               {
                 label: '机械工程学院',
                 value: '机械工程学院',
@@ -729,6 +798,7 @@ export default {
         },
         //根据学院获取学生信息
         async getStudentInfo(){
+            this.stuList = [];
             this.queryCollegeAndMajor.college = this.queryValue[0];
             this.queryCollegeAndMajor.major = this.queryValue[1];
             const {data:res} = await this.$http.get("/stus",{params:this.queryCollegeAndMajor});
@@ -739,7 +809,53 @@ export default {
                 this.stuList = res.data.list;
                 this.$message.success(res.msg);
             }
-        } 
+        },
+        //获取老师信息
+        async getTeacherInfo(){
+          this.teaList = [];
+            const college = this.queryTeacherValue[0];
+            const {data:res} = await this.$http.get("/tears",{params:{"college":college}});
+            console.log(res);
+           if(res.status!=200){
+                  return  this.$message.error(res.msg);
+            }
+            if(res.status==200){
+                this.teaList = res.data;
+                this.$message.success(res.msg);     
+            }
+        },
+        AssignTurtor(id){
+          this.assignTurtor.sid = id;
+          this.editTutorVisible = true;
+        },
+        //为学生分配导师
+        async AssignTurtorPOST(){
+           this.assignTurtor.tid = this.TeacherId;
+           //console.log(this.assignTurtor);
+           const {data:res} = await this.$http.post("/relationship",this.assignTurtor);
+            if(res.status!=200){
+                return  this.$message.error(res.msg);
+            }
+             if(res.status==200){
+              this.editTutorVisible = false;
+              if(this.buttontype1 == "success"){
+                this.getTeacherList();
+              }
+              if(this.buttontype2 =="success"){
+                this.getStudentList();
+              }
+              this.$messge.success(res.msg);
+            }
+            
+        },
+        // 跳转到老师详情页面
+        getTeacherDetails(id){
+          this.$router.push({path:"/userdetails",query:{id:id,type:'teacher'}});
+        }, 
+        // 跳转到学生详情页面
+        getStudentDetails(id){
+          this.$router.push({path:"/userdetails",query:{id:id,type:'student'}});
+        }, 
     },
     created(){
         this.getTeacherList();
