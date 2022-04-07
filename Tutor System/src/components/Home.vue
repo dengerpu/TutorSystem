@@ -114,22 +114,16 @@
                             <span>课程管理</span>
                         </template>
                         <!-- 二级菜单 -->
-                        <el-menu-item index="/videos" @click="saveNavState('/videos')">
+                        <el-menu-item index="/timetable" @click="saveNavState('/timetable')">
                             <template slot="title">
                                 <i class="el-icon-menu"></i>
-                                <span>视频列表</span>
+                                <span>查看课表</span>
                             </template>
                         </el-menu-item>
-                        <el-menu-item index="/textlist" @click="saveNavState('/textlist')">
+                        <el-menu-item index="/panalysis" @click="saveNavState('/panalysis')">
                             <template slot="title">
                                 <i class="el-icon-menu"></i>
-                                <span>文本列表</span>
-                            </template>
-                        </el-menu-item>
-                        <el-menu-item index="/texts" @click="saveNavState('/texts')">
-                            <template slot="title">
-                                <i class="el-icon-menu"></i>
-                                <span>添加文本</span>
+                                <span>成绩分析</span>
                             </template>
                         </el-menu-item>
                     </el-submenu>
@@ -142,24 +136,13 @@
                             <!-- 文字 -->
                             <span>通知管理</span>
                         </template>
-                        <!-- 二级菜单 -->
-                        <!-- <el-menu-item index="41">
+                       <el-menu-item index="/notice" @click="saveNavState('/notice')">
                             <template slot="title">
                                 <i class="el-icon-menu"></i>
-                                <span>导航一</span>
+                                <span>发布会议</span>
                             </template>
-                        </el-menu-item> -->
-                    </el-submenu>
-
-                       <el-submenu index="5">
-                        <!-- 一级菜单模板 -->
-                        <template slot="title">
-                            <!-- 图标 -->
-                            <i class="iconfont icon-baobiao"></i>
-                            <!-- 文字 -->
-                            <span>通知管理</span>
-                        </template>
-                         <el-menu-item index="/notice" @click="saveNavState('/notice')">
+                        </el-menu-item>
+                        <el-menu-item index="/publish" @click="saveNavState('/publish')">
                             <template slot="title">
                                 <i class="el-icon-menu"></i>
                                 <span>发布通知</span>
@@ -171,6 +154,16 @@
                                     <span>查看通知</span>
                                 </template>
                         </el-menu-item>
+                    </el-submenu>
+
+                       <el-submenu index="5">
+                        <!-- 一级菜单模板 -->
+                        <template slot="title">
+                            <!-- 图标 -->
+                            <i class="iconfont icon-baobiao"></i>
+                            <!-- 文字 -->
+                            <span>数据分析</span>
+                        </template>
                     </el-submenu>
                 
                 </el-menu>

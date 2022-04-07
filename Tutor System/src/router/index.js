@@ -18,6 +18,8 @@ import SecurityCenter from '../components/index/SecurityCenter.vue'
 import NoticeMange from '../components/noticeManger/NoticeMange.vue'
 import NoticeShowALL from '../components/noticeManger/NoticeShowAll.vue'
 import TimeTable from '../components/course/Timetable.vue'
+import PublishArtile from '../components/noticeManger/PublishAtricle.vue'
+import PerAnalysis from '../components/course/PerformanceAnalysis.vue'
 
 
 Vue.use(VueRouter)
@@ -48,8 +50,10 @@ const routes = [
       {path:'/psersoncenter',component:PersonCenter},
       {path:'/securitycenter',component:SecurityCenter},
       {path:'/timetable',component:TimeTable},
+      {path:'/panalysis',component:PerAnalysis},
       {path:'/notice',component:NoticeMange},
-      {path:'/noticeall',component:NoticeShowALL}
+      {path:'/noticeall',component:NoticeShowALL},
+      {path:'/publish',component:PublishArtile}
     ]}
 ]
 
