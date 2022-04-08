@@ -4,7 +4,7 @@
        <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>课程管理</el-breadcrumb-item>
-            <el-breadcrumb-item>成绩</el-breadcrumb-item>
+            <el-breadcrumb-item>成绩分析报告</el-breadcrumb-item>
         </el-breadcrumb>
         <el-card class="box-card">
             <div style="display:flex;">

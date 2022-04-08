@@ -17,6 +17,7 @@ import PersonCenter from '../components/index/PersonalCenter.vue'
 import SecurityCenter from '../components/index/SecurityCenter.vue'
 import NoticeMange from '../components/noticeManger/NoticeMange.vue'
 import NoticeShowALL from '../components/noticeManger/NoticeShowAll.vue'
+import NoticeDetails from '../components/noticeManger/NoticeDeatis.vue'
 import TimeTable from '../components/course/Timetable.vue'
 import PublishArtile from '../components/noticeManger/PublishAtricle.vue'
 import PerAnalysis from '../components/course/PerformanceAnalysis.vue'
@@ -53,7 +54,8 @@ const routes = [
       {path:'/panalysis',component:PerAnalysis},
       {path:'/notice',component:NoticeMange},
       {path:'/noticeall',component:NoticeShowALL},
-      {path:'/publish',component:PublishArtile}
+      {path:'/publish',component:PublishArtile},
+      {path:'/noticedetails',component:NoticeDetails}
     ]}
 ]
 

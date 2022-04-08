@@ -1,5 +1,11 @@
 <template>
   <body>
+            <!-- 面包屑导航 -->
+       <el-breadcrumb separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>通知管理</el-breadcrumb-item>
+            <el-breadcrumb-item>发布通知</el-breadcrumb-item>
+        </el-breadcrumb>
 
       <div>
     <!-- 发布公告 -->
@@ -16,17 +22,17 @@
             <el-row > 
 
               <el-col :span="24" :xs="12" :sm="12" :md="24" :lg="24" :xl="24" >
-                  <el-form-item label="发布人 " prop="realname"    label-width="100px">
+                  <el-form-item label="发布人 " prop="author"    label-width="100px">
                     <el-tag  effect="plain"  type="info"  style="width:150px;text-align: left;" > 
-                      <i style="text-align: left;font-size:12px;color:#000">{{NoticeForm.realname}}</i> </el-tag>
+                      <i style="text-align: left;font-size:12px;color:#000">{{NoticeForm.author}}</i> </el-tag>
                 </el-form-item>
-                <el-form-item label="发布时间 " prop="date"  label-width="100px" >
+                <el-form-item label="发布时间 " prop="create_time"  label-width="100px" >
                   <div class="block">
                     <el-date-picker
                       disabled
                       size="small"
                       style="width:150px ;"
-                      v-model.trim="NoticeForm.date"
+                      v-model.trim="NoticeForm.create_time"
                       type="date"
                       placeholder="选择日期">
                     </el-date-picker>
@@ -66,7 +72,7 @@
 
               <el-form-item label=" " prop="state"  label-width="50px">
                     <div style="text-align: left">
-                   <el-button type="primary" size="small"  @click.prevent="sendNotice('NoticeForm')">确定发送</el-button>
+                   <el-button type="primary" size="small"  @click="sendNotice()">确定发送</el-button>
                     </div>
               </el-form-item>
             </el-col>
@@ -92,17 +98,17 @@
             <el-row > 
 
               <el-col :span="24" :xs="12" :sm="12" :md="24" :lg="24" :xl="24" >
-                  <el-form-item label="发布人 " prop="realname"    label-width="100px">
+                  <el-form-item label="发布人 " prop="author"    label-width="100px">
                     <el-tag  effect="plain"  type="info"  style="width:150px;text-align: left;" > 
-                      <i style="text-align: left;font-size:12px;color:#000">{{ruleForm.realname}}</i> </el-tag>
+                      <i style="text-align: left;font-size:12px;color:#000">{{ruleForm.author}}</i> </el-tag>
                 </el-form-item>
-                <el-form-item label="发布时间 " prop="date"  label-width="100px" >
+                <el-form-item label="发布时间 " prop="update_time"  label-width="100px" >
                   <div class="block">
                     <el-date-picker
                       disabled
                       size="small"
                       style="width:150px ;"
-                      v-model.trim="ruleForm.date"
+                      v-model.trim="ruleForm.update_time"
                       type="date"
                       placeholder="选择日期">
                     </el-date-picker>
@@ -140,7 +146,7 @@
 
               <el-form-item label=" " prop="state"  label-width="50px">
                     <div style="text-align: left">
-                   <el-button type="primary" size="small"  @click.prevent="updateNotice('ruleForm')">确定修改</el-button>
+                   <el-button type="primary" size="small"  @click.prevent="updateNotice()">确定修改</el-button>
                     </div>
               </el-form-item>
             </el-col>
@@ -162,7 +168,7 @@
           <el-form-item  >
                   <div style="text-align:left;">
         <el-button plain  type="success" icon="el-icon-s-management" @click="sendNoticeDialog()"
-              >发布公告</el-button
+              >发布通知</el-button
             >
         </div>
           </el-form-item>
@@ -176,25 +182,42 @@
     <el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
     <div style="text-align: left; ">
         <el-tag effect="dark" type="info"  style="font-size:15px; margin:24px;margin-bottom:20px;">
-            <h2>旧公告记录</h2>
+            <h2>通知记录</h2>
         </el-tag>
     </div>
-    <el-table class="mytable" :data="tableData" border :default-sort = "{prop: 'date'}">
+    <el-table class="mytable" :data="tableData" border>
       <!-- <el-table-column prop="frequency" label="序号" align="center" width="50px" ></el-table-column> -->
-        <el-table-column prop="date" align="center"   sortable label="发布时间"
+        <!-- <el-table-column prop="date" align="center"   sortable label="发布时间"
+        :formatter="dataFormat"  ></el-table-column> -->
+        <el-table-column prop="update_time" align="center"   sortable label="发布时间"
         :formatter="dataFormat"  ></el-table-column>
         <el-table-column prop="title" align="center" label="公告标题" ></el-table-column>
-        <el-table-column prop="content" align="center"  label="公告内容" ></el-table-column>
-         <el-table-column prop="realname" align="center"  label="发布人"></el-table-column>
-        <el-table-column label="操作" >
+        <el-table-column align="center"  label="公告内容" >
+            <template slot-scope="scope">
+              <p v-if="scope.row.content.length>20">请点击详情</p>
+              <p v-else>{{scope.row.content}}</p> 
+          </template>
+        </el-table-column>
+        <el-table-column prop="author" align="center"  label="发布人"></el-table-column>
+        <el-table-column prop="enclosure" align="center"  label="附件"></el-table-column>
+        <el-table-column label="更多">
+            <template slot-scope="scope">
+              <el-link
+               size="small" 
+              type="primary"
+              @click="getDetails(scope.row.id)"
+            > <i class="el-icon-view"></i>查看详情</el-link>
+        </template>
+      </el-table-column>
+        <el-table-column label="操作" width="180px">
         <template slot-scope="scope">
-          <el-button size="small" type="primary" icon="el-icon-edit" @click="edit(scope.row)"
+          <el-button size="small" type="primary" icon="el-icon-edit" @click="edit(scope.row.id)"
             >编辑</el-button>
           <el-button
             icon="el-icon-delete"
             type="danger"
             size="small"
-            @click="del(scope.row)"
+            @click="del(scope.row.id)"
             >删除</el-button
           >
         </template>
@@ -208,7 +231,7 @@
       @current-change="handleCurrentChange"
       :v-if="total != 0"
       :current-page="currentPage"
-      :page-sizes="[5,15,30,50]"
+      :page-sizes="[1,5,7,10]"
       :page-size="pageSize"
       :total="total"
       layout="total, sizes, prev, pager, next, jumper"
@@ -223,7 +246,7 @@ export default {
   mounted() {
         let _this = this; // 声明一个变量指向Vue实例this，保证作用域一致
         this.timer = setInterval(() => {
-        _this.NoticeForm.date = new Date(); // 修改数据date
+        _this.NoticeForm.create_time = new Date(); // 修改数据date
         }, 1000)
     },
     beforeDestroy() {
@@ -238,6 +261,12 @@ export default {
         NoticeForm:{
          date: new Date(),
          content:"",
+        },
+         //获取用户列表的参数对象
+        queryInfo:{
+          query:'',
+          pagenum:1,  //当前页数
+          pagesize:5  //每页显示多少条数据
         },
          ruleForm:{},
          tableData:[],
@@ -263,137 +292,131 @@ export default {
                 return dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate()
                 // + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds()
             },
-        handleSizeChange(val) {
-        // console.log(`每页 ${val} 条`);
-        this.pageSize = val;
-          this.findAll();
-        },
-        handleCurrentChange(val) {
-        // console.log(`当前页: ${val}`);
-        this.currentPage = val;
-         this.findAll();
-        },
-        resetForm(formName) {
-         this.$refs[formName].resetFields();
-        },
-        findAll(){
-             const _this = this;
-            var username = window.sessionStorage.getItem("username");
-            axios.get('http://localhost:8181/data/findAllByUsername/'+username).then(function(resp){
-                _this.NoticeForm.realname = resp.data.realname;
-                var formName = _this.NoticeForm.realname;
-            axios.get('http://localhost:8181/notice/showAllNotice/'+_this.currentPage+'/'+_this.pageSize+'/'+formName).then(function(resp){
-            _this.tableData = resp.data.content;
-            });
-        });
-        },
-        sendNotice(formName){
-            const _this = this;
-            _this.$refs[formName].validate((valid) => {
-                if (valid) {
-                    axios.post("http://localhost:8181/notice/sendNotice",_this.NoticeForm)
-                    .then(function (resp) {
-                switch(resp.data){
-
-                    case "repeat":
-                    _this.$message.error("该公告已经发送!请勿重复发送");
-                     _this.$refs["NoticeForm"].resetFields();
-                    break;
-
-                    case "success":
-                    window.location.reload();
-                    _this.$message({
-                        message: "发送成功！",
-                        type: "success",
-                    });
-                    break; 
-                }
-              })
-                .catch((failResponse) => {});
-            } else {
-            return false;
+        async getNoticeList(){
+            //发送请求获取数据
+            const {data:res} = await this.$http.get('/notices',{params:this.queryInfo});
+            //console.log(res);
+            if(res.status!=200){
+                this.tableData = [];
+                this.total = 0;
+                return this.$message.error(res.msg)
+            }else if(res.status==200){
+                this.tableData = res.data.list;
+                this.total = res.data.totalCount;
             }
-            });
         },
-        findNotice(){
-            var _this=this;
-            axios.get('http://localhost:8181/notice/showNotice/').then(function(resp){
-                _this.NoticeForm = resp.data;
-                }); 
+        //监听oagesize改变的事件
+        handleSizeChange(newSize){
+            //console.log(newSize);
+            this.queryInfo.pagesize = newSize;
+            //再次调用接口查找用户
+            this.getNoticeList();
         },
-        updateNotice(formName){
-             const _this = this;
-            _this.$refs[formName].validate((valid) => {
-                if (valid) {
-                    axios.post("http://localhost:8181/notice/updateNotice",_this.ruleForm)
-                    .then(function (resp) {
-                switch(resp.data){
-
-                    case "empty":
-                    _this.$message.error("该公告内容不存在");
-                   
-                    break;
-
-                    case "success":
-                    window.location.reload();
-                    _this.$message({
-                        message: "修改成功！",
-                        type: "success",
-                    });
-                    break; 
+        //监听页码值改变的事件
+        handleCurrentChange(newPage){
+            //console.log(newPage);
+            this.queryInfo.pagenum = newPage;
+             //再次调用接口查找用户
+             this.getNoticeList();
+        },
+          //获取老师姓名
+      async getTeachName(username){
+        const {data:res} = await this.$http.get('/tearname',{params:{"username":username}});
+        //console.log(res);
+        if(res.status!=200){
+              this.NoticeForm.author = "未知"
+              return this.$message.error(res.msg)
+          }else if(res.status==200){
+              this.NoticeForm.author = res.data;
+          }
+      },
+      async sendNotice(){
+        //console.log(this.NoticeForm);
+        this.NoticeForm.update_time = this.NoticeForm.create_time;
+          const{data:res}= await this.$http.post("/notices",this.NoticeForm)
+               // console.log(res);
+                if(res.status!=200){
+                  return  this.$message.error(res.msg);
                 }
-              })
-                .catch((failResponse) => {});
-            } else {
-            return false;
-            }
-            });
-        },
-        edit(row){
-            this.updateNoticeDataDialog = true;
-             var _this=this;
-            axios.get('http://localhost:8181/notice/showById/'+row.id).then(function(resp){
-                _this.ruleForm = resp.data;
-                }); 
-        },
-    del(row) {
-      this.$confirm("此操作将永久删除该公告信息, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          // 数据库...
-          const _this = this;
-          axios
-            .delete("http://localhost:8181/notice/delNotice/" + row.id)
-            .then(function (resp) {
-              _this.$alert(" 公告《 " + row.title + " 》 已删除！", "消息", {
-                confirmButtonTest: "确定",
-                callback: (action) => {
-                  window.location.reload();}
-              });
-            });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
-    },
+                if(res.status==200){
+                    this.$message.success(res.msg);
+                    this.getNoticeList();
+                    this.sendNoticeDataDialog = false;
+                }
+      },
+      //发布公告展示
     sendNoticeDialog(){
-        this.sendNoticeDataDialog = true;
-      
-    },
+          const username = window.sessionStorage.getItem("username");
+          if(username=='admin'){
+            this.NoticeForm.author = "管理员"
+          }else{
+            this.getTeachName(username);
+          }
+          this.sendNoticeDataDialog = true;
+        },
+         //根据id获取通知详情信息
+      async getNoticeById(id){
+          const {data:res} = await this.$http.get('/editnotice',{params:{"id":id}});
+          //console.log(res);
+          if(res.status!=200){
+                return this.$message.error(res.msg)
+            }else if(res.status==200){
+              this.ruleForm = res.data;
+              this.$message.success(res.msg)
+            }
+      },
+      edit(id){
+        this.getNoticeById(id);
+        this.updateNoticeDataDialog = true;
+      },
+      async updateNotice(){
+        this.ruleForm.update_time = new Date();
+         // console.log(this.ruleForm);
+          const {data:res} = await this.$http.post('/editnotice',this.ruleForm);
+          if(res.status!=200){
+                return this.$message.error(res.msg)
+            }else if(res.status==200){
+              this.getNoticeList();
+              this.updateNoticeDataDialog = false;
+              this.$message.success(res.msg)
+            }
+      },
+      async del(id){
+          const confirmResult = await this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+            }).catch(err=>err);  //相当于err => {return err}
+        
+          // console.log(confirmResult)
+          if(confirmResult != 'confirm'){
+              this.$message.info('已取消删除')
+          }
+           if(confirmResult == 'confirm'){
+              const {data:res} = await this.$http.get("/deletenotice",{params:{"id":id}})
+              if(res.status!=200){
+                return this.$message.error(res.msg);
+            }
+            if(res.status==200){
+                this.$message.success(res.msg)
+                this.getNoticeList();
+            }
+          }
+      },
+        // 跳转到详情页面
+        getDetails(id){
+            this.$router.push({path:"/noticedetails",query:{id:id}});
+        },
+
+
     },
     created(){
-        this.findAll();
-      var choice = window.sessionStorage.getItem("choice");
-        if(choice === "学生"){
-            this.$router.push({name: "MasterPage"});
-        }
-      }
+        this.getNoticeList();
+      // var choice = window.sessionStorage.getItem("choice");
+      //   if(choice === "学生"){
+      //       this.$router.push({name: "MasterPage"});
+      //   }
+    }
 }
 </script>
 
