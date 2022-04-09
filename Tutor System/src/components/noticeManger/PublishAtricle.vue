@@ -15,7 +15,8 @@
                 <el-upload
                   class="upload-demo"
                   drag
-                  action="http://127.0.0.1:8888/api/private/uploadfile"
+                  action="http://localhost:8888/upload"
+                  :on-success="handleAvatarSuccess"
                   multiple>
                   <i class="el-icon-upload"></i>
                   <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -40,6 +41,7 @@ export default {
   },
   data() {
     return {
+        uploadUrl:'',
          ruleForm: {
         },
         rules: {
@@ -50,6 +52,16 @@ export default {
     };
   },
   methods:{
+     //文件上传成功
+        handleAvatarSuccess(res, file) {
+            if(res.status==200){
+                this.uploadUrl = "http://localhost:8888"+res.data;
+                return this.$message.success("上传成功");
+            }else{
+                return this.$message.error("上传失败");
+            }
+                    
+        },
        submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
@@ -62,6 +74,18 @@ export default {
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
+      },
+         //获取老师姓名
+      async getTeachName(username){
+        const {data:res} = await this.$http.get('/tearname',{params:{"username":username}});
+        //console.log(res);
+        if(res.status!=200){
+              this.ruleForm.author = "未知"
+              return this.$message.error(res.msg)
+          }else if(res.status==200){
+              this.ruleForm.author = res.data.author;
+              this.ruleForm.tid = res.data.tid;
+          }
       },
         //添加用户
         async saveText(){
@@ -85,8 +109,28 @@ export default {
               }
               return fmt; 
           } 
-            this.ruleForm.update_time = new Date().format("yyyy-MM-dd hh:mm:ss");
-            console.log(this.ruleForm);
+          const username = window.sessionStorage.getItem("username");
+            if(username=='admin'){
+              this.ruleForm.author = "管理员"
+              this.ruleForm.tid = 0;
+            }else{
+              this.getTeachName(username);
+            }
+            //this.ruleForm.update_time = new Date().format("yyyy-MM-dd hh:mm:ss");
+            this.ruleForm.update_time = new Date();
+            this.ruleForm.create_time = this.ruleForm.update_time;
+            this.ruleForm.enclosure = this.uploadUrl;
+           // console.log(this.ruleForm);
+            const{data:res}= await this.$http.post("/notices",this.ruleForm)
+               // console.log(res);
+              if(res.status!=200){
+                return  this.$message.error(res.msg);
+              }
+               if(res.status==200){
+                  this.$message.success(res.msg);
+                  this.ruleForm = {};
+                  this.$router.push({path:"/noticeall"});
+              }
             
         },
     }

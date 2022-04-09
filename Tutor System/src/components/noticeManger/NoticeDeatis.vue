@@ -12,7 +12,11 @@
                 <p class="one">发布时间：<em class="blue">{{noticeInfo.date}}</em>&nbsp;&nbsp;&nbsp;作者：<em class="blue">{{noticeInfo.author}}</em><em class="gray">（<em id="num">80</em>人点击）</em></p>
                 <hr/>
                 <div v-html="noticeInfo.content"></div>
-                <div v-if="noticeInfo.enclouse!=null">附件：{{noticeInfo.enclouse}}</div>
+                <div style="float:left; padding:10px 0;" v-if="noticeInfo.enclosure!=null">附件：
+                        <a :href="noticeInfo.enclosure">
+                            <el-button  type="primary" size="mini">附件下载<i class="el-icon-download el-icon--right"></i></el-button>
+                        </a>  
+                </div>
         </el-card>
     </div>
 </template>

@@ -181,7 +181,7 @@
     <el-card style="margin:20px;" class="box-card">
     <el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
     <div style="text-align: left; ">
-        <el-tag effect="dark" type="info"  style="font-size:15px; margin:24px;margin-bottom:20px;">
+        <el-tag effect="dark" type="info"  style="font-size:15px; margin:24px;margin-bottom:20px; line-height:0px;">
             <h2>通知记录</h2>
         </el-tag>
     </div>
@@ -199,7 +199,13 @@
           </template>
         </el-table-column>
         <el-table-column prop="author" align="center"  label="发布人"></el-table-column>
-        <el-table-column prop="enclosure" align="center"  label="附件"></el-table-column>
+        <el-table-column align="center"  label="附件">
+          <template slot-scope="scope">
+                 <a :href="scope.row.enclosure">
+                   <el-button v-if="scope.row.enclosure!=null" type="primary" size="mini">附件下载<i class="el-icon-download el-icon--right"></i></el-button>
+                   </a>  
+          </template>
+        </el-table-column>
         <el-table-column label="更多">
             <template slot-scope="scope">
               <el-link
@@ -224,19 +230,19 @@
       </el-table-column>
     </el-table>
    </el-col>
-<el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-    <el-pagination
-      style="padding-top: 15px;text-align: left;"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :v-if="total != 0"
-      :current-page="currentPage"
-      :page-sizes="[1,5,7,10]"
-      :page-size="pageSize"
-      :total="total"
-      layout="total, sizes, prev, pager, next, jumper"
-    ></el-pagination>
-  </el-col>
+  <el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+      <el-pagination
+        style="padding-top: 15px;text-align: left;"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :v-if="total != 0"
+        :current-page="currentPage"
+        :page-sizes="[1,5,7,10]"
+        :page-size="pageSize"
+        :total="total"
+        layout="total, sizes, prev, pager, next, jumper"
+      ></el-pagination>
+    </el-col>
       </el-card>
   </body>
 </template>
@@ -327,7 +333,8 @@ export default {
               this.NoticeForm.author = "未知"
               return this.$message.error(res.msg)
           }else if(res.status==200){
-              this.NoticeForm.author = res.data;
+              this.NoticeForm.author = res.data.author;
+              this.NoticeForm.tid = res.data.tid;
           }
       },
       async sendNotice(){
@@ -349,6 +356,7 @@ export default {
           const username = window.sessionStorage.getItem("username");
           if(username=='admin'){
             this.NoticeForm.author = "管理员"
+            this.NoticeForm.tid = 0;
           }else{
             this.getTeachName(username);
           }

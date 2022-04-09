@@ -32,7 +32,8 @@ import {
     TimePicker,
     Upload,
     Cascader,
-    Link
+    Link,
+    Tag
 } from 'element-ui'
 
 
@@ -66,6 +67,7 @@ Vue.use(TimePicker)
 Vue.use(Upload)
 Vue.use(Cascader)
 Vue.use(Link)
+Vue.use(Tag)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm;

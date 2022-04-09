@@ -9,7 +9,7 @@
     <el-card style="margin:20px;" class="box-card">
     <el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
     <div style="text-align: left; ">
-        <el-tag effect="dark" type="info"  style="font-size:15px; margin:24px;margin-bottom:20px;">
+        <el-tag effect="dark" type="info"  style="font-size:15px; margin:24px;margin-bottom:20px; line-height:0px;">
             <h2>通知记录</h2>
         </el-tag>
     </div>
@@ -24,7 +24,13 @@
           </template>
         </el-table-column>
         <el-table-column prop="author" align="center" label="发布人"></el-table-column>
-        <el-table-column prop="enclouse" align="center" label="附件"></el-table-column>
+        <el-table-column  align="center" label="附件">
+        <template slot-scope="scope">
+                 <a :href="scope.row.enclosure">
+                   <el-button v-if="scope.row.enclosure!=null" type="primary" size="mini">附件下载<i class="el-icon-download el-icon--right"></i></el-button>
+                   </a>  
+          </template>
+        </el-table-column>
         <el-table-column label="操作" >
         <template slot-scope="scope">
               <el-link
@@ -64,8 +70,10 @@ export default {
           pagenum:1,  //当前页数
           pagesize:5  //每页显示多少条数据
         },
-        total:'',
-        pagesize:''
+        total:0,
+        pageSize:0,
+        currentPage:0,
+        tableData:[]
        } 
     },
 
