@@ -94,24 +94,14 @@
                   ></el-input>
                 </el-form-item>
 
-                <!-- <el-form-item label="真实姓名" prop="realname">
-                  <el-input
-                    prefix-icon="el-icon-s-custom"
-                    placeholder="请输入真实姓名"
-                    v-model.trim="ruleForm.realname"
-                  ></el-input>
-                </el-form-item> -->
-
                 <el-form-item  label="选择用户" prop="type" style="margin-left:5px; text-align: center" >
                   <el-select 
                   style="margin-right:125px; width:300px"
-                    v-model="ruleForm.choice" 
+                    v-model="ruleForm.type" 
                     placeholder="请选择用户类型"
                     prop="type">
                     <el-option label="学生" value="student"></el-option>
-                    <el-option label="辅导员" value="辅导员"></el-option>
-                    <el-option label="院领导" value="院领导"></el-option>
-                    <el-option label="教务处" value="教务处"></el-option>
+                    <el-option label="导师" value="teacher"></el-option>
                   </el-select>
                 </el-form-item>
 
@@ -175,7 +165,7 @@ export default {
                return callback(new Error('手机号不能为空'));
           } else {
               const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
-              console.log(reg.test(value));
+              //console.log(reg.test(value));
               if (reg.test(value)) {
                    callback();
                } else {
@@ -195,6 +185,8 @@ export default {
         phone:"",
         checkPass: "",
         type:[],
+        status:'',
+        date:''
       },
       successResponse: [],
 
@@ -247,21 +239,20 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          console.log(this.formData);
-           const {data: res}= await this.$http.post('/login', {
-                username: this.formData.username,
-                password: this.formData.password,
-                type: this.formData.type
-                }); 
-                if(res.status===200){
-                  this.$message.success("登陆成功");
-                //1.2token只应在当前网站打开期间生效，所以将token保存在sessionStorage中
-                window.sessionStorage.setItem("token","123456");
-                //2.通过编程式导航跳到后台主页路由地址是/home
-                this.$router.push("/home")
-                }else{
-                  return this.$message.error(res.msg);
-                }
+            this.ruleForm.status = 0;
+            this.ruleForm.date = new Date();
+           // console.log(this.ruleForm);
+            const{data:res}= await this.$http.post("/register",this.ruleForm)
+                   //  console.log(res);
+            if(res.status===200){
+                this.$message.success(res.msg);
+                this.$router.push({path:"/login"});
+                
+            }else if(res.status==400){
+                this.$message.error(res.msg);
+            }else if(res.status==401){
+              this.$message.error(res.msg);
+            }
            }
         })
     },

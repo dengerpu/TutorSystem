@@ -684,7 +684,7 @@ export default {
                 this.addform.image = this.uploadImageUrl;
                 console.log(this.addform);
                 const{data:res}= await this.$http.post("/students",this.addform)
-                console.log(res);
+               // console.log(res);
                 if(res.status!=200){
                   return  this.$message.error(res.msg);
                 }

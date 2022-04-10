@@ -69,10 +69,8 @@
                     v-model="ruleForm.choice" 
                     placeholder="请选择用户类型"
                     prop="choice">
-                    <el-option label="学生" value="学生"></el-option>
-                    <el-option label="辅导员" value="辅导员"></el-option>
-                    <el-option label="院领导" value="院领导"></el-option>
-                    <el-option label="教务处" value="教务处"></el-option>
+                    <el-option label="学生" value="student"></el-option>
+                    <el-option label="导师" value="teacher"></el-option>
                     <!-- <el-option label="管理员" value="管理员" ></el-option> -->
                   </el-select>
                 </el-form-item>

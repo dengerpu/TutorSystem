@@ -75,17 +75,18 @@
                     style="width: 100%"
                     >
                     <el-option label="学生" value="student"></el-option>
-                    <el-option label="辅导员" value="辅导员"></el-option>
-                    <el-option label="院领导" value="院领导"></el-option>
-                    <el-option label="教务处" value="教务处"></el-option>
+                    <el-option label="导师" value="teacher"></el-option>
                     <el-option label="管理员" value="admin"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item prop="code"  style="margin-left:-100px;display:flex;">
                     <el-col :span="10" style="float:left;">
-                       <el-input type="text" v-model="code" placeholder="请输入验证码"></el-input>
+                       <el-input type="text" v-model="formData.code" placeholder="请输入验证码"></el-input>
                     </el-col>
                     <el-col :span="10" style="float:right;">
+                          <!-- <span @click="getCode">
+                              <img :src="imageUrl" ></img>
+                          </span> -->
                           <img :src="imageUrl" @click="getCode"></img>
                     </el-col>
                 </el-form-item>
@@ -145,8 +146,8 @@ export default {
         username: "",
         password: "",
         type:[],
+        code:"",
       },
-      code:"",
       imageUrl:"",
       responseResult: [],
       rules: {
@@ -187,7 +188,7 @@ export default {
           },
         ],
         type: [{ required: true, message: "请选择用户", trigger: "blur" }],
-        code: [{ required: false, message: "请选择验证码", trigger: "blur" }],
+        code: [{ required: true, message: "请选择验证码", trigger: "blur" }],
       },
     };
   },
@@ -201,13 +202,19 @@ export default {
                   // this.$router.push("/home")
       this.$refs[formName].validate(async valid => {
         if (valid) {
-         // console.log(this.formData);
-           const {data: res}= await this.$http.post('/login', {
+          const{data:resCode} = await this.$http.get('verify/checkcode',{params:{"code":this.formData.code}});
+          if(resCode.status==400){
+            return this.$message.error(resCode.msg);
+          }else if(resCode.status==401){
+             return this.$message.error(resCode.msg);
+          }else if(resCode.status==200){
+                     // console.log(this.formData);
+             const {data: res}= await this.$http.post('/login', {
                 username: this.formData.username,
                 password: this.formData.password,
                 type: this.formData.type
                 }); 
-                console.log(res);
+                //console.log(res);
                 if(res.status===200){
                   this.$message.success("登陆成功");
                   //1.2token只应在当前网站打开期间生效，所以将token保存在sessionStorage中
@@ -219,15 +226,19 @@ export default {
                 }else{
                   return this.$message.error(res.msg);
                 }
+
+          }
+
            }
         })
       },
       //获取验证码
       async getCode(){
-        console.log("执行了....");
-        let res= await this.$http.get('/verify/getcode',{
+       // console.log("执行了....");
+        let res= await this.$http.get('verify/getcode',{
         responseType: 'blob'
         })
+       // this.imageUrl = res.data
         this.imageUrl = window.URL.createObjectURL(res.data)
 
         //this.imageUrl=window.URL.createObjectURL(blob)
