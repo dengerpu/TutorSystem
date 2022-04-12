@@ -23,32 +23,35 @@
             <el-table :data="userlist" style="width: 100%" border stripe>
                 <el-table-column type="index"></el-table-column>
                 <el-table-column prop="username" label="账号" ></el-table-column>
-                 <el-table-column prop="password" label="密码" >*****</el-table-column>
+                 <el-table-column prop="password" label="密码" >******</el-table-column>
                 <el-table-column prop="email" label="邮箱" ></el-table-column>
                 <el-table-column prop="phone" label="电话"></el-table-column>
                 <el-table-column prop="type" label="类型"> </el-table-column>
-                <el-table-column prop="date" label="日期"></el-table-column>
+                <el-table-column :formatter="dataFormat" prop="date" label="日期"></el-table-column>
                 <el-table-column  label="状态">
                     <template slot-scope="scope">
-                        <el-tooltip :content="'Switch value: ' + scope.row.status" placement="top">
+                         <el-button type="success" v-if="scope.row.status==0" size="mini">正常</el-button>
+                         <el-button type="danger" v-if="scope.row.status==1" size="mini"  @click="userStateChange(scope.row)">异常</el-button>
+                        <!-- <el-tooltip :content="'Switch value: ' + scope.row.status" placement="top">
                                 <el-switch
                                     v-if="scope.row.status==0"
                                     v-model="scope.row.status"
                                     active-color="#ff4949"
                                     inactive-color="#13ce66"
-                                    active-value="1"
-                                    inactive-value="0"
+                                    active-value="0"
+                                    inactive-value="1"
                                     @change="userStateChange(scope.row)"
+                                    disabled
                                 ></el-switch>
-                                 <el-switch
+                                <el-switch
                                     v-if="scope.row.status==1"
                                     v-model="scope.row.status"
-                                    active-color="#ff4949"
-                                    inactive-color="#13ce66"
+                                    active-color="#13ce66"
+                                    inactive-color="#ff4949"
                                     active-value="1"
                                     inactive-value="0"
                                     @change="userStateChange(scope.row)"
-                                ></el-switch>
+                                ></el-switch> -->
                         </el-tooltip>
                     </template>
                    
@@ -262,6 +265,17 @@ export default {
         };
     },
     methods:{
+                   //修改时间格式
+        dataFormat: function(row,column){
+            let data = row[column.property]
+            if (data ===null) {
+                return ''
+            }
+            let dt = new Date(data)
+            // console.log("dt"+dt);
+                return dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate()
+                // + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds()
+            },
         async getUserList(){
             //console.log(this.queryInfo);
             //发送请求获取数据
@@ -293,6 +307,7 @@ export default {
        async userStateChange(userinfo){
            // console.log(userinfo);
            this.updateTypeForm = userinfo;
+           this.updateTypeForm.status = 0;
           //  发送请求改变用户状态
            const {data:res} = await this.$http.post("/edituser",this.updateTypeForm);
            //console.log(res);

@@ -4,7 +4,7 @@
         <!-- 头部区域 -->
         <el-header>
             <div>
-                <img src="../assets/img/logo.png" alt="">
+                <img class="imgBox" src="../assets/img/logo.png" alt="">
                 <span>导师制下的学生成长管理系统</span>
             </div>
             <el-button type="info" @click="logout">退出</el-button>
@@ -14,27 +14,27 @@
             <!-- 侧边栏 -->
             <el-aside :width="isCollapse ?'64px' :'200px'">
                 <div class="toggle-button" @click="menuToggle">|||</div>
-                <el-menu class="el-menu-vertical-demo" background-color="#b3c0d1" text-color="#fff" active-text-color="#409eff" 
-                unique-opened :collapse="isCollapse" :collapse-transition="false" :router="true" :default-active="activePath">
+                <el-menu class="el-menu-vertical-demo" background-color="#292B3A" text-color="#fff" active-text-color="#409eff" 
+                :unique-opened="false" :collapse="isCollapse" :collapse-transition="false" :router="true" :default-active="activePath">
                     <!-- 一级菜单 -->
                     <el-submenu index="0">
                         <!-- 一级菜单模板 -->
                         <template slot="title">
                             <!-- 图标 -->
-                            <i class="iconfont icon-user"></i>
+                            <i class="el-icon-s-home"></i>
                             <!-- 文字 -->
                             <span>首页</span>
                         </template>
                          <!-- 二级菜单 -->
                         <el-menu-item index="/psersoncenter" @click="saveNavState('/psersoncenter')">
                             <template slot="title">
-                                <i class="el-icon-menu"></i>
+                                <i class="el-icon-info"></i>
                                 <span>个人中心</span>
                             </template>
                         </el-menu-item>
                         <el-menu-item index="/securitycenter" @click="saveNavState('/securitycenter')">
                             <template slot="title">
-                                <i class="el-icon-menu"></i>
+                                <i class="el-icon-warning"></i>
                                 <span>安全中心</span>
                             </template>
                         </el-menu-item>
@@ -51,19 +51,19 @@
                         <!-- 二级菜单 -->
                         <el-menu-item index="/users" @click="saveNavState('/users')">
                             <template slot="title">
-                                <i class="el-icon-menu"></i>
+                                <i class="el-icon-notebook-2"></i>
                                 <span>用户列表</span>
                             </template>
                         </el-menu-item>
                         <el-menu-item index="/teachers" @click="saveNavState('/teachers')">
                             <template slot="title">
-                                <i class="el-icon-menu"></i>
+                                <i class="el-icon-user-solid"></i>
                                 <span>教师列表</span>
                             </template>
                         </el-menu-item>
                         <el-menu-item index="/students" @click="saveNavState('/students')">
                             <template slot="title">
-                                <i class="el-icon-menu"></i>
+                                <i class="el-icon-user"></i>
                                 <span>学生列表</span>
                             </template>
                         </el-menu-item>
@@ -74,32 +74,32 @@
                         <!-- 一级菜单模板 -->
                         <template slot="title">
                             <!-- 图标 -->
-                            <i class="iconfont icon-lock_fill"></i>
+                            <i class="el-icon-s-help"></i>
                             <!-- 文字 -->
-                            <span>权限管理</span>
+                            <span>双选管理</span>
                         </template>
                         <!-- 二级菜单 -->
                         <el-menu-item index="/choice" @click="saveNavState('/choice')">
                             <template slot="title">
-                                <i class="el-icon-menu"></i>
+                                <i class="el-icon-thumb"></i>
                                 <span>分配管理</span>
                             </template>
                         </el-menu-item>
                         <el-menu-item index="/applayrecord" @click="saveNavState('/applayrecord')">
                             <template slot="title">
-                                <i class="el-icon-menu"></i>
+                                <i class="el-icon-notebook-2"></i>
                                 <span>申请记录</span>
                             </template>
                         </el-menu-item>
                         <el-menu-item index="/tutorchoice" @click="saveNavState('/tutorchoice')">
                             <template slot="title">
-                                <i class="el-icon-menu"></i>
+                                <i class="el-icon-price-tag"></i>
                                 <span>选择学生</span>
                             </template>
                         </el-menu-item>
                         <el-menu-item index="/studentchoice" @click="saveNavState('/studentchoice')">
                             <template slot="title">
-                                <i class="el-icon-menu"></i>
+                                <i class="el-icon-discount"></i>
                                 <span>选择老师</span>
                             </template>
                         </el-menu-item>
@@ -109,20 +109,20 @@
                         <!-- 一级菜单模板 -->
                         <template slot="title">
                             <!-- 图标 -->
-                            <i class="iconfont icon-shangpin"></i>
+                            <i class="el-icon-s-management"></i>
                             <!-- 文字 -->
-                            <span>课程管理</span>
+                            <span>学习管理</span>
                         </template>
                         <!-- 二级菜单 -->
                         <el-menu-item index="/timetable" @click="saveNavState('/timetable')">
                             <template slot="title">
-                                <i class="el-icon-menu"></i>
+                                <i class="el-icon-date"></i>
                                 <span>查看课表</span>
                             </template>
                         </el-menu-item>
                         <el-menu-item index="/panalysis" @click="saveNavState('/panalysis')">
                             <template slot="title">
-                                <i class="el-icon-menu"></i>
+                                <i class="el-icon-document-remove"></i>
                                 <span>成绩分析</span>
                             </template>
                         </el-menu-item>
@@ -132,25 +132,25 @@
                         <!-- 一级菜单模板 -->
                         <template slot="title">
                             <!-- 图标 -->
-                            <i class="iconfont icon-danju"></i>
+                            <i class="el-icon-message-solid"></i>
                             <!-- 文字 -->
                             <span>通知管理</span>
                         </template>
                        <el-menu-item index="/notice" @click="saveNavState('/notice')">
                             <template slot="title">
-                                <i class="el-icon-menu"></i>
+                                <i class="el-icon-document-add"></i>
                                 <span>发布会议</span>
                             </template>
                         </el-menu-item>
                         <el-menu-item index="/publish" @click="saveNavState('/publish')">
                             <template slot="title">
-                                <i class="el-icon-menu"></i>
+                                <i class="el-icon-edit-outline"></i>
                                 <span>发布通知</span>
                             </template>
                         </el-menu-item>
                         <el-menu-item index="/noticeall" @click="saveNavState('/noticeall')">
                                 <template slot="title">
-                                    <i class="el-icon-menu"></i>
+                                    <i class="el-icon-document-copy"></i>
                                     <span>查看通知</span>
                                 </template>
                         </el-menu-item>
@@ -219,15 +219,17 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #b3c0d1;
+    // background-color: #b3c0d1;
+    // color: #fff;
+    background-color: #292B3A;
     color: #fff;
     font-size: 20px;
     >div{
         display: flex;
         align-items: center;
         img{
-            // width: 40px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
         }
         span{
             margin-left: 20px;
@@ -235,7 +237,8 @@ export default {
     }
 }
 .el-aside{
-    background-color: rgb(238, 241, 246);
+    //background-color: rgb(238, 241, 246);
+    background-color: #fff;
     .el-menu{
         border-right: none;
         span{
