@@ -13,6 +13,7 @@ import AdminChoice from '../components/assign/AdminChoice.vue'
 import StudentChoicie from '../components/assign/StudentChoice.vue'
 import TutorChoice from '../components/assign/TutorChoice.vue'
 import ApplationRecord from '../components/assign/ApplationRecord.vue'
+import MyApplation from '../components/assign/MyApplation.vue'
 import PersonCenter from '../components/index/PersonalCenter.vue'
 import SecurityCenter from '../components/index/SecurityCenter.vue'
 import NoticeMange from '../components/noticeManger/NoticeMange.vue'
@@ -55,7 +56,8 @@ const routes = [
       {path:'/notice',component:NoticeMange},
       {path:'/noticeall',component:NoticeShowALL},
       {path:'/publish',component:PublishArtile},
-      {path:'/noticedetails',component:NoticeDetails}
+      {path:'/noticedetails',component:NoticeDetails},
+      {path:'/myApplation',component:MyApplation}
     ]}
 ]
 

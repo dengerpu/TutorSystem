@@ -751,8 +751,9 @@ export default {
                 return this.$message.error(res.msg);
             }
             if(res.status==200){
+              this.getStudentList();
                 this.$message.success(res.msg)
-                this.getStudentList();
+                
             }
           }
         },

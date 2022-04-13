@@ -22,9 +22,6 @@
                         :props="{ expandTrigger: 'hover' }"
                         @change="handleChange"></el-cascader>
                 </el-col>
-                <el-col :span="4">
-                    <el-button type="primary" @click="addStudent">添加学生</el-button>
-                </el-col>
             </el-row>
 
             <el-table :data="studentlist" style="width: 100%" border stripe>
@@ -44,7 +41,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
-                      <el-button type="warning">申请</el-button>
+                      <el-button type="warning" @click="Agree(scope.row.id)">申请</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -78,6 +75,9 @@ export default {
                 query:'',
                 pagenum:1,  //当前页数
                 pagesize:5  //每页显示多少条数据
+            },
+            addRecord:{
+
             },
             value:[],
             formLabelWidth: '80px',
@@ -458,6 +458,19 @@ export default {
         }
     },
     methods:{
+      async Agree(sid){
+        this.addRecord.sid = sid;
+        this.addRecord.tid = parseInt(window.sessionStorage.getItem("tid"));
+        //console.log(this.addRecord);
+       const {data:res} = await this.$http.post("/relationship",this.addRecord);
+            if(res.status == 200){
+                this.$message.success(res.msg);
+            }else if (res.status == 400){
+              return this.$message.warning(res.msg);
+            }else if(res.status==401){
+              return this.$message.error(res.msg);
+            }
+      },
         async getStudentList(){
             //发送请求获取数据
            const {data:res} = await this.$http.get('/students',{params:this.queryInfo});

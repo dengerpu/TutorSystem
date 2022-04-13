@@ -15,9 +15,6 @@
                 <el-col :span="4">
                     <el-button  :type="buttontype2" @click="getStudent">学生</el-button>
                 </el-col>
-                <el-col :span="4">
-                    <el-button type="primary" >添加教师</el-button>
-                </el-col>
             </el-row>
 
             <el-table :data="list" style="width: 100%" border stripe>
@@ -64,7 +61,7 @@
 
         <!-- 更改老师招生名额的对话框 -->
         <el-dialog
-        title="分配学生"
+        title="分配名额"
         :visible.sync="addQuotaVisible"
         width="50%">
         <!-- 内容主题区域 -->

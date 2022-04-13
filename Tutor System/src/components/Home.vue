@@ -40,7 +40,7 @@
                         </el-menu-item>
                     </el-submenu>
                     <!-- 一级菜单 -->
-                    <el-submenu index="1">
+                    <el-submenu index="1" v-if="type=='admin'">
                         <!-- 一级菜单模板 -->
                         <template slot="title">
                             <!-- 图标 -->
@@ -49,19 +49,19 @@
                             <span>用户管理</span>
                         </template>
                         <!-- 二级菜单 -->
-                        <el-menu-item index="/users" @click="saveNavState('/users')">
+                        <el-menu-item index="/users" v-if="type=='admin'" @click="saveNavState('/users')">
                             <template slot="title">
                                 <i class="el-icon-notebook-2"></i>
                                 <span>用户列表</span>
                             </template>
                         </el-menu-item>
-                        <el-menu-item index="/teachers" @click="saveNavState('/teachers')">
+                        <el-menu-item index="/teachers"  v-if="type=='admin'" @click="saveNavState('/teachers')">
                             <template slot="title">
                                 <i class="el-icon-user-solid"></i>
                                 <span>教师列表</span>
                             </template>
                         </el-menu-item>
-                        <el-menu-item index="/students" @click="saveNavState('/students')">
+                        <el-menu-item index="/students"  v-if="type=='admin'" @click="saveNavState('/students')">
                             <template slot="title">
                                 <i class="el-icon-user"></i>
                                 <span>学生列表</span>
@@ -79,25 +79,31 @@
                             <span>双选管理</span>
                         </template>
                         <!-- 二级菜单 -->
-                        <el-menu-item index="/choice" @click="saveNavState('/choice')">
+                        <el-menu-item index="/choice"  v-if="type=='admin'" @click="saveNavState('/choice')">
                             <template slot="title">
                                 <i class="el-icon-thumb"></i>
                                 <span>分配管理</span>
                             </template>
                         </el-menu-item>
-                        <el-menu-item index="/applayrecord" @click="saveNavState('/applayrecord')">
+                        <el-menu-item index="/applayrecord" v-if="type=='teacher'"   @click="saveNavState('/applayrecord')">
                             <template slot="title">
                                 <i class="el-icon-notebook-2"></i>
                                 <span>申请记录</span>
                             </template>
                         </el-menu-item>
-                        <el-menu-item index="/tutorchoice" @click="saveNavState('/tutorchoice')">
+                        <el-menu-item index="/myapplation" v-if="type=='student'"  @click="saveNavState('/myapplation')">
+                            <template slot="title">
+                                <i class="el-icon-notebook-2"></i>
+                                <span>我的申请</span>
+                            </template>
+                        </el-menu-item>
+                        <el-menu-item index="/tutorchoice" v-if="type=='teacher'"   @click="saveNavState('/tutorchoice')">
                             <template slot="title">
                                 <i class="el-icon-price-tag"></i>
                                 <span>选择学生</span>
                             </template>
                         </el-menu-item>
-                        <el-menu-item index="/studentchoice" @click="saveNavState('/studentchoice')">
+                        <el-menu-item index="/studentchoice" v-if="type=='student'" @click="saveNavState('/studentchoice')">
                             <template slot="title">
                                 <i class="el-icon-discount"></i>
                                 <span>选择老师</span>
@@ -136,13 +142,13 @@
                             <!-- 文字 -->
                             <span>通知管理</span>
                         </template>
-                       <el-menu-item index="/notice" @click="saveNavState('/notice')">
+                       <el-menu-item index="/notice" v-if="type!='student'" @click="saveNavState('/notice')">
                             <template slot="title">
                                 <i class="el-icon-document-add"></i>
                                 <span>发布会议</span>
                             </template>
                         </el-menu-item>
-                        <el-menu-item index="/publish" @click="saveNavState('/publish')">
+                        <el-menu-item index="/publish"  v-if="type!='student'" @click="saveNavState('/publish')">
                             <template slot="title">
                                 <i class="el-icon-edit-outline"></i>
                                 <span>发布通知</span>
@@ -180,13 +186,15 @@
 <script>
 export default {
     created(){
-        this.getMenulist(); //获取菜单
+        this.getJurisdiction(); //获取菜单
         this.activePath = window.sessionStorage.getItem('activePath');
     },
     data(){
         return{
             isCollapse:false,  //菜单的切换
-            activePath:''    //导航栏切换，高亮显示
+            activePath:'' ,   //导航栏切换，高亮显示
+            username:'',
+            type:''
         }
     },
     methods:{
@@ -196,8 +204,9 @@ export default {
             this.$router.push("/login");
         },
         //发起请求获取菜单数据
-        async getMenulist(){
-
+        getJurisdiction(){
+            this.username = window.sessionStorage.getItem("username");
+            this.type = window.sessionStorage.getItem("type");
         },
         menuToggle(){
             this.isCollapse = !this.isCollapse;

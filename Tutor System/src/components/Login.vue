@@ -194,6 +194,20 @@ export default {
   },
 
   methods: {
+    async getStudentId(username){
+      const {data:res} = await this.$http.get('/getsid',{params:{"username":username}});
+      //console.log(res);
+      if(res.status==200){
+        window.sessionStorage.setItem("sid",res.data);
+      }
+    },
+    async getTeacherId(username){
+      const {data:res} = await this.$http.get('/gettid',{params:{"username":username}});
+      if(res.status==200){
+        window.sessionStorage.setItem("tid",res.data);
+        console.log("tid:"+res.data);
+      }
+    },
     // 登录
     submitForm(formName) {
         //1.2token只应在当前网站打开期间生效，所以将token保存在sessionStorage中
@@ -221,6 +235,12 @@ export default {
                   window.sessionStorage.setItem("token","123456");
                   window.sessionStorage.setItem("username",res.data.username);
                   window.sessionStorage.setItem("type",res.data.type);
+                  if(res.data.type=="student"){
+                    this.getStudentId(res.data.username);
+                  }else if(res.data.type=="teacher"){
+                    this.getTeacherId(res.data.username);
+                    console.log("查询教师id成功");
+                  }
                   //2.通过编程式导航跳到后台主页路由地址是/home
                   this.$router.push("/home")
                 }else{

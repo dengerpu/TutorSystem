@@ -22,9 +22,6 @@
                         :props="{ expandTrigger: 'hover' }"
                         @change="handleChange"></el-cascader>
                 </el-col>
-                <el-col :span="4">
-                    <el-button type="primary" @click="addTeacher">添加教师</el-button>
-                </el-col>
             </el-row>
 
             <el-table :data="teacherlist" style="width: 100%" border stripe>
@@ -44,7 +41,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
-                        <el-button type="warning">申请</el-button>
+                        <el-button type="warning" @click="ApplicationTeacher(scope.row.id)">申请</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -74,10 +71,7 @@ export default {
                 pagenum:1,  //当前页数
                 pagesize:5  //每页显示多少条数据
             },
-            queryInfo1:{
-                query:'',
-                pagenum:1,  //当前页数
-                pagesize:5  //每页显示多少条数据
+            applicationRecord:{
             },
             value:[],
             formLabelWidth: '80px',
@@ -458,6 +452,37 @@ export default {
         }
     },
     methods:{
+      async ApplationPost(tid){
+        this.applicationRecord.tid = tid;
+        this.applicationRecord.sid = parseInt(window.sessionStorage.getItem("sid"));
+        this.applicationRecord.create_time = new Date();
+        console.log(this.applicationRecord);
+        const {data:res} = await this.$http.post('/records',this.applicationRecord);
+        console.log(res);
+        if(res.status==200){
+          this.$message.success(res.msg);
+        }else if(res.status==401){
+          this.$message.warning(res.msg);
+        }else if(res.status==400){
+          this.$message.error(res.msg);
+        }
+          
+      },
+      async ApplicationTeacher(tid){
+          this.$confirm('是否要选择该老师, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center: true
+        }).then(() => {
+            this.ApplationPost(tid);
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消申请'
+          });
+        });
+      },
         async getTeacherList(){
             //发送请求获取数据
            const {data:res} = await this.$http.get('/teachers',{params:this.queryInfo});
@@ -485,30 +510,11 @@ export default {
              //再次调用接口查找用户
              this.getTeacherList();
         },
-       // 跳转到详情页面
+           // 跳转到详情页面
         getDetails(id){
             this.$router.push({path:"/userdetails",query:{id:id,type:'teacher'}});
             //console.log(id);
         },
-                //条件筛选查询
-       async handleChange(){
-         this.queryInfo1.query = this.value2[0]+'/'+this.value2[1];
-         console.log(this.queryInfo1)
-         //发送请求获取数据
-          //  const {data:res} = await this.$http.get('/queryteacher',{params:this.queryInfo1});
-          //  console.log(res)
-          //  if(!res.flag){
-          //           this.teacherlist = [];
-          //           this.total = 0;
-          //           return this.$message.error(res.errorMsg)
-          //       }
-          //       if(res.flag){
-          //           this.teacherlist = res.data.users;
-          //           this.total = res.data.totalpage;
-                    
-          //       }
-       }
-
     },
     created(){
         this.getTeacherList();

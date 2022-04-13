@@ -33,7 +33,9 @@ import {
     Upload,
     Cascader,
     Link,
-    Tag
+    Tag,
+    Timeline,
+    TimelineItem
 } from 'element-ui'
 
 
@@ -68,6 +70,8 @@ Vue.use(Upload)
 Vue.use(Cascader)
 Vue.use(Link)
 Vue.use(Tag)
+Vue.use(Timeline)
+Vue.use(TimelineItem)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm;
