@@ -203,7 +203,8 @@ export default {
     },
     async getTeacherId(username){
       const {data:res} = await this.$http.get('/gettid',{params:{"username":username}});
-      if(res.status==200){
+      
+     if(res.status==200){
         window.sessionStorage.setItem("tid",res.data);
         console.log("tid:"+res.data);
       }

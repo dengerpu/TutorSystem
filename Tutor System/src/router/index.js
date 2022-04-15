@@ -22,6 +22,9 @@ import NoticeDetails from '../components/noticeManger/NoticeDeatis.vue'
 import TimeTable from '../components/course/Timetable.vue'
 import PublishArtile from '../components/noticeManger/PublishAtricle.vue'
 import PerAnalysis from '../components/course/PerformanceAnalysis.vue'
+import FormulatePlan from '../components/growth/FormulatePlan.vue'
+import MyGrowthPlan from '../components/growth/MyGrowthPlan.vue'
+import MyStudent from '../components/growth/MyStudents.vue'
 
 
 Vue.use(VueRouter)
@@ -57,7 +60,10 @@ const routes = [
       {path:'/noticeall',component:NoticeShowALL},
       {path:'/publish',component:PublishArtile},
       {path:'/noticedetails',component:NoticeDetails},
-      {path:'/myApplation',component:MyApplation}
+      {path:'/myApplation',component:MyApplation},
+      {path:'/myplan',component:MyGrowthPlan},
+      {path:'/formulateplan',component:FormulatePlan},
+      {path:'/mystudent',component:MyStudent}
     ]}
 ]
 

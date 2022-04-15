@@ -35,7 +35,9 @@ import {
     Link,
     Tag,
     Timeline,
-    TimelineItem
+    TimelineItem,
+    Drawer,
+    Transfer
 } from 'element-ui'
 
 
@@ -72,6 +74,8 @@ Vue.use(Link)
 Vue.use(Tag)
 Vue.use(Timeline)
 Vue.use(TimelineItem)
+Vue.use(Drawer)
+Vue.use(Transfer)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm;

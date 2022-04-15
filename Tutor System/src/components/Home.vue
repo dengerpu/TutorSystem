@@ -166,10 +166,22 @@
                         <!-- 一级菜单模板 -->
                         <template slot="title">
                             <!-- 图标 -->
-                            <i class="iconfont icon-baobiao"></i>
+                            <i class="el-icon-s-marketing"></i>
                             <!-- 文字 -->
-                            <span>数据分析</span>
+                            <span>成长管理</span>
                         </template>
+                         <el-menu-item index="/mystudent"   @click="saveNavState('/mystudent')">
+                            <template slot="title">
+                                <i class="el-icon-connection"></i>
+                                <span>我的学生</span>
+                            </template>
+                        </el-menu-item>
+                        <el-menu-item index="/myplan" @click="saveNavState('/myplan')">
+                                <template slot="title">
+                                    <i class="el-icon-data-line"></i>
+                                    <span>查看计划</span>
+                                </template>
+                        </el-menu-item>
                     </el-submenu>
                 
                 </el-menu>
