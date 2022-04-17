@@ -3,35 +3,35 @@
             <!-- 面包屑导航 -->
        <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>通知管理</el-breadcrumb-item>
-            <el-breadcrumb-item>查看通知</el-breadcrumb-item>
+            <el-breadcrumb-item>学习管理</el-breadcrumb-item>
+            <el-breadcrumb-item>我的提交</el-breadcrumb-item>
         </el-breadcrumb>
     <el-card style="margin:20px;" class="box-card">
     <el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
     <div style="text-align: left; ">
         <el-tag effect="dark" type="info"  style="font-size:15px; margin:24px;margin-bottom:20px; line-height:0px;">
-            <h2>通知记录</h2>
+            <h2>提交记录</h2>
         </el-tag>
     </div>
     <el-table class="mytable" :data="tableData" border>
-        <el-table-column prop="update_time" align="center" sortable label="发布时间"
+        <el-table-column prop="update_time" align="center" sortable label="提交时间"
         :formatter="dataFormat"  ></el-table-column>
-        <el-table-column prop="title" align="center"  label="公告标题" ></el-table-column>
-        <el-table-column  label="公告内容" >
+        <el-table-column prop="title" align="center"  label="提交标题" ></el-table-column>
+        <el-table-column  label="提交内容" >
           <template slot-scope="scope">
               <p v-if="scope.row.content.length>20">请点击详情</p>
               <p v-else>{{scope.row.content}}</p> 
           </template>
         </el-table-column>
-        <el-table-column prop="author" align="center" label="发布人"></el-table-column>
+        <el-table-column prop="author" align="center" label="提交人"></el-table-column>
         <el-table-column  align="center" label="附件">
         <template slot-scope="scope">
                  <a :href="scope.row.enclosure">
-                   <el-button v-if="scope.row.enclosure!=null" type="primary" size="mini">附件下载<i class="el-icon-download el-icon--right"></i></el-button>
+                   <el-button v-if="scope.row.enclosure!=null&&scope.row.enclosure!=''" type="primary" size="mini">附件下载<i class="el-icon-download el-icon--right"></i></el-button>
                    </a>  
           </template>
         </el-table-column>
-        <el-table-column label="操作" >
+        <el-table-column label="详情" >
         <template slot-scope="scope">
               <el-link
                size="small" 
@@ -40,21 +40,29 @@
             > <i class="el-icon-view"></i>查看详情</el-link>
         </template>
       </el-table-column>
+      <el-table-column label="操作" width="180px">
+        <template slot-scope="scope">
+          <!-- 修改按钮 -->
+          <el-button type="primary" icon="el-icon-edit" size="mini" @click="editPaper(scope.row.id)"></el-button>
+          <!-- 删除按钮 -->
+          <el-button type="danger" icon="el-icon-delete" size="mini" @click="removePaperById(scope.row.id)"></el-button>
+        </template>
+      </el-table-column>
     </el-table>
    </el-col>
-<el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-    <el-pagination
-      style="padding-top: 15px;text-align: left;"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :v-if="total != 0"
-      :current-page="queryInfo.pagenum"
-      :page-sizes="[1,2,5,10]"
-      :page-size="queryInfo.pagesize"
-      :total="total"
-      layout="total, sizes, prev, pager, next, jumper"
-    ></el-pagination>
-  </el-col>
+  <el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+      <el-pagination
+        style="padding-top: 15px;text-align: left;"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :v-if="total != 0"
+        :current-page="queryInfo.pagenum"
+        :page-sizes="[1,2,5,10]"
+        :page-size="queryInfo.pagesize"
+        :total="total"
+        layout="total, sizes, prev, pager, next, jumper"
+      ></el-pagination>
+    </el-col>
       </el-card>
   </body>
 </template>
@@ -66,14 +74,13 @@ export default {
        return{
          //获取用户列表的参数对象
         queryInfo:{
+          sid:0,
           query:'',
           pagenum:1,  //当前页数
           pagesize:5  //每页显示多少条数据
         },
         total:0,
-        pageSize:0,
-        currentPage:0,
-        tableData:[]
+        tableData:[],
        } 
     },
 
@@ -94,19 +101,19 @@ export default {
             //console.log(newSize);
             this.queryInfo.pagesize = newSize;
             //再次调用接口查找用户
-            this.getNoticeList();
+            this.getPaperList();
         },
         //监听页码值改变的事件
         handleCurrentChange(newPage){
             //console.log(newPage);
             this.queryInfo.pagenum = newPage;
              //再次调用接口查找用户
-             this.getNoticeList();
+             this.getPaperList();
         },
-        async getNoticeList(){
+        async getPaperList(){
             //发送请求获取数据
-            const {data:res} = await this.$http.get('/notices',{params:this.queryInfo});
-            //console.log(res);
+            const {data:res} = await this.$http.get('/papper',{params:this.queryInfo});
+            console.log(res);
             if(res.status!=200){
                 this.total = 0;
                 return this.$message.error(res.msg)
@@ -115,6 +122,32 @@ export default {
                 this.total = res.data.totalCount;
             }
         },
+         //根据ID删除用户
+        async removePaperById(id){
+            const confirmResult = await this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+            }).catch(err=>err);  //相当于err => {return err}
+        
+          // console.log(confirmResult)
+          if(confirmResult != 'confirm'){
+              this.$message.info('已取消删除')
+          }
+           if(confirmResult == 'confirm'){
+              const {data:res} = await this.$http.get("/deletepaper",{params:{"id":id}})
+              if(res.status!=200){
+                return this.$message.error(res.msg);
+            }
+            if(res.status==200){
+              this.getPaperList();
+              this.$message.success(res.msg)
+            }
+          }
+        },
+        editPaper(id){
+          this.$router.push({path:"/editpaper",query:{id:id}});
+        },
          // 跳转到详情页面
         getDetails(id){
             this.$router.push({path:"/noticedetails",query:{id:id}});
@@ -122,7 +155,8 @@ export default {
        
     },
     created(){
-        this.getNoticeList();
+      this.queryInfo.sid = parseInt(window.sessionStorage.getItem("sid"));
+      this.getPaperList();
     }
 }
 </script>

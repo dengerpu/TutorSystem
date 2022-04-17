@@ -25,6 +25,10 @@ import PerAnalysis from '../components/course/PerformanceAnalysis.vue'
 import FormulatePlan from '../components/growth/FormulatePlan.vue'
 import MyGrowthPlan from '../components/growth/MyGrowthPlan.vue'
 import MyStudent from '../components/growth/MyStudents.vue'
+import PaperManage from '../components/course/PaperManage.vue'
+import PublishPaper from '../components/course/PublishPaper.vue'
+import PaperDetails from '../components/course/PaperDeatis.vue'
+import EditPaper from '../components/course/EditPaper.vue'
 
 
 Vue.use(VueRouter)
@@ -63,7 +67,11 @@ const routes = [
       {path:'/myApplation',component:MyApplation},
       {path:'/myplan',component:MyGrowthPlan},
       {path:'/formulateplan',component:FormulatePlan},
-      {path:'/mystudent',component:MyStudent}
+      {path:'/mystudent',component:MyStudent},
+      {path:'/paper',component:PaperManage},
+      {path:'/publishpaper',component:PublishPaper},
+      {path:'/paperdetails',component:PaperDetails},
+      {path:'/editpaper',component:EditPaper}
     ]}
 ]
 

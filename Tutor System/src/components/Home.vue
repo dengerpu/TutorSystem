@@ -120,6 +120,18 @@
                             <span>学习管理</span>
                         </template>
                         <!-- 二级菜单 -->
+                        <el-menu-item index="/publishpaper" @click="saveNavState('/publishpaper')">
+                            <template slot="title">
+                                <i class="el-icon-document-add"></i>
+                                <span>提交论文</span>
+                            </template>
+                        </el-menu-item>
+                        <el-menu-item index="/paper" @click="saveNavState('/paper')">
+                            <template slot="title">
+                                <i class="el-icon-document"></i>
+                                <span>我的提交</span>
+                            </template>
+                        </el-menu-item>
                         <el-menu-item index="/timetable" @click="saveNavState('/timetable')">
                             <template slot="title">
                                 <i class="el-icon-date"></i>
@@ -128,7 +140,7 @@
                         </el-menu-item>
                         <el-menu-item index="/panalysis" @click="saveNavState('/panalysis')">
                             <template slot="title">
-                                <i class="el-icon-document-remove"></i>
+                                <i class="el-icon-data-analysis"></i>
                                 <span>成绩分析</span>
                             </template>
                         </el-menu-item>

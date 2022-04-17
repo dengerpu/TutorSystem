@@ -231,17 +231,17 @@
     </el-table>
    </el-col>
   <el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-      <el-pagination
-        style="padding-top: 15px;text-align: left;"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :v-if="total != 0"
-        :current-page="currentPage"
-        :page-sizes="[1,5,7,10]"
-        :page-size="pageSize"
-        :total="total"
-        layout="total, sizes, prev, pager, next, jumper"
-      ></el-pagination>
+    <el-pagination
+      style="padding-top: 15px;text-align: left;"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :v-if="total != 0"
+      :current-page="queryInfo.pagenum"
+      :page-sizes="[1,2,5,10]"
+      :page-size="queryInfo.pagesize"
+      :total="total"
+      layout="total, sizes, prev, pager, next, jumper"
+    ></el-pagination>
     </el-col>
       </el-card>
   </body>
