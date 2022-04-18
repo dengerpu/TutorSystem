@@ -87,7 +87,7 @@ export default {
                 return this.$message.success("上传成功");
             }else{
               this.uploadUrl = null;
-                return this.$message.error("上传失败");
+              return this.$message.error("上传失败");
             }
                     
         },
@@ -137,13 +137,10 @@ export default {
               return fmt; 
           } 
             //this.ruleForm.update_time = new Date().format("yyyy-MM-dd hh:mm:ss");
-            this.ruleForm.sid = parseInt(window.sessionStorage.getItem("sid"));
-            this.getStudentName(sid);
-            this.ruleForm.create_time = new Date();
-            this.ruleForm.update_time = this.ruleForm.create_time;
+            this.ruleForm.update_time = new Date();
             this.ruleForm.enclosure = this.uploadUrl;
             //console.log(this.ruleForm);
-            const{data:res}= await this.$http.post("/papers",this.ruleForm)
+            const{data:res}= await this.$http.post("/editpaper",this.ruleForm)
                // console.log(res);
               if(res.status!=200){
                 return  this.$message.error(res.msg);
@@ -154,21 +151,22 @@ export default {
                   this.$router.push({path:"/paper"});
               }    
         },
-    async getPaper(){
+      async getPaper(){
             const id = this.$route.query.id;
-            //console.log(id);
             const {data:res} = await this.$http.get('/editpaper',{params:{"id":id}});
-            console.log(res);
+            //console.log(res);
             if(res.status!=200){
                 return this.$message.error(res.msg)
             }else if(res.status==200){
                  this.ruleForm = res.data;
+                 this.uploadUrl = res.data.enclosure;
             }
         }
     },
-   
     created(){
-       this.getPaper();
+      this.ruleForm.sid = parseInt(window.sessionStorage.getItem("sid"));
+      this.getStudentName(this.ruleForm.sid);
+      this.getPaper();
     }
 }
 </script>

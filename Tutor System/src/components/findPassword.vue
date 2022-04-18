@@ -340,7 +340,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .register {
   background: url("../assets/img/实名认证.svg");
   background-size: 125% 130%;
@@ -367,5 +367,9 @@ export default {
   background-image: linear-gradient(-180deg, #fff, #f4f4f4);
   -webkit-box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1);
   box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1);
+}
+.loginpageback {
+    padding: 4% 0;
+    background-color: #66b5cd;
 }
 </style>

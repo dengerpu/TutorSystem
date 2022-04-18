@@ -4,19 +4,62 @@
        <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>学习管理</el-breadcrumb-item>
-             <el-breadcrumb-item>提交详情</el-breadcrumb-item>
+             <el-breadcrumb-item>详情</el-breadcrumb-item>
         </el-breadcrumb>
         <el-card>
-             <el-button round class="el-icon-caret-left goback" @click="goBack">返回</el-button>
-            	<h2>{{noticeInfo.title}}</h2>
-                <p class="one">发布时间：<em class="blue">{{noticeInfo.date}}</em>&nbsp;&nbsp;&nbsp;作者：<em class="blue">{{noticeInfo.author}}</em><em class="gray">（<em id="num">80</em>人点击）</em></p>
-                <hr/>
-                <div v-html="noticeInfo.content"></div>
-                <div style="float:left; padding:10px 0;" v-if="noticeInfo.enclosure!=null">附件：
-                        <a :href="noticeInfo.enclosure">
-                            <el-button  type="primary" size="mini">附件下载<i class="el-icon-download el-icon--right"></i></el-button>
-                        </a>  
-                </div>
+            <div class="button_box">
+                <el-button round class="el-icon-caret-left goback" @click="goBack">返回</el-button>
+            </div>
+            <el-divider></el-divider>
+            <el-descriptions class="margin-top" title="" :column="3" border>
+                <el-descriptions-item>
+                <template slot="label">
+                    <i class="el-icon-user"></i>
+                    学号
+                </template>
+                {{studentInfo.username}}
+                </el-descriptions-item>
+                <el-descriptions-item>
+                <template slot="label">
+                    <i class="el-icon-user-solid"></i>
+                    姓名
+                </template>
+                 {{studentInfo.name}}
+                </el-descriptions-item>
+                <el-descriptions-item>
+                <template slot="label">
+                    <i class="el-icon-office-building"></i>
+                    学院
+                </template>
+                {{studentInfo.college}}
+                </el-descriptions-item>
+                <el-descriptions-item>
+                <template slot="label">
+                    <i class="el-icon-school"></i>
+                    专业
+                </template>
+                {{studentInfo.major}}
+                </el-descriptions-item>
+                <el-descriptions-item>
+                <template slot="label">
+                    <i class="el-icon-office-building"></i>
+                    类型
+                </template>
+                 <el-tag size="small">{{paperInfo.type}}</el-tag>
+                </el-descriptions-item>
+                <el-descriptions-item label="">
+                    <template slot="label">
+                        <i class="el-icon-s-custom"></i>
+                        指导老师
+                    </template>
+                     {{studentInfo.turtor}}
+                </el-descriptions-item>
+                </el-descriptions>
+                <el-descriptions title=""  :column="4" border>
+                    <el-descriptions-item label="论文内容">
+                        <div v-html="paperInfo.content"></div>
+                    </el-descriptions-item>
+                </el-descriptions>
         </el-card>
     </div>
 </template>
@@ -26,23 +69,32 @@ export default {
         return{
             id:'',
             type:'',
-            noticeInfo:{}
+            studentInfo:{},
+            paperInfo:{}
         }
     },
     methods:{
         //获取用户详情信息
-        async getNoticeInfo(){
-            this.id = this.$route.query.id;
-            const {data:res} = await this.$http.get('/editnotice',{params:{"id":this.id}});
+        async getStudentInfo(){
+            const {data:res} = await this.$http.get('/findstudent',{params:{"id":this.id}});
                // console.log(res);
             if(res.status!=200){
                 this.$message.console.error(res.msg);
             }
             if(res.status==200){
-                this.noticeInfo = res.data;
-                let dt = new Date(res.data.update_time);
-                this.noticeInfo.date = dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate();
-              
+                this.studentInfo = res.data;
+            }
+        },
+          //获取用户详情信息
+        async getPaperInfo(){
+           const pid = this.$route.query.id;  //论文id
+            const {data:res} = await this.$http.get('/editpaper',{params:{"id":pid}});
+               // console.log(res);
+            if(res.status!=200){
+                this.$message.console.error(res.msg);
+            }
+            if(res.status==200){
+                this.paperInfo = res.data;
             }
         },
         goBack(){
@@ -50,28 +102,18 @@ export default {
         }
     },
     created(){
-       this.getNoticeInfo();
+        this.id = parseInt(window.sessionStorage.getItem("sid"));
+        this.getStudentInfo();
+        this.getPaperInfo();
     }
 }
 </script>
 
 <style lang="less" scoped>
- h2{
-	font:normal 22px/35px  "微软雅黑";
-	   color:#072885;
-	   text-align:center;
+.button_box{
+    width: 100%;
+    height: 40px;
 }
-.one{
-	font-szie:12px;
-	text-align:center;
-}
-p{text-indent:2em;}
-.blue{color:#3d6cb0;}
-.gray{color:#666;}
-#num{color:#3d6cb0;}
-em{ font-style:normal;}
-.two{font-family:"楷体_GB2312";}
-.four{font-weight:bold;}
 .goback{
    float: left;
 }

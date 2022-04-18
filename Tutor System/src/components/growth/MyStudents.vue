@@ -11,9 +11,6 @@
             <el-row :gutter="20">
                 <el-col :span="4">
                     <div style="text-align: left; ">
-                        <el-tag effect="dark" type="info"  style="font-size:15px; margin:24px;margin-bottom:20px; line-height:0px;">
-                            <h2>通知记录</h2>
-                        </el-tag>
                     </div>
                 </el-col>
                 <el-col :span="4" >
@@ -68,8 +65,14 @@
         ref="drawer"
         >
         <div class="demo-drawer__content">
-            <el-transfer v-model="value"
-             :data="data"></el-transfer>
+            <div class="block">
+            <span class="demonstration">折叠展示Tag</span>
+            <el-cascader
+                :options="options"
+                :props="props"
+                collapse-tags
+                clearable></el-cascader>
+            </div>
             <div class="demo-drawer__footer">
             <el-button @click="cancelForm">取 消</el-button>
             <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
@@ -92,17 +95,6 @@ export default {
     
   },
     data(){
-      const generateData = _ => {
-        const data = [];
-        for (let i = 1; i <= 15; i++) {
-          data.push({
-            key: i,
-            label: `备选项 ${ i }`,
-            disabled: i % 4 === 0
-          });
-        }
-        return data;
-      };
         return{
                    //获取用户列表的参数对象
             queryInfo:{
@@ -114,15 +106,54 @@ export default {
             total:0,  //总数据数
             studentlist: [],//用户数据
             dialog: false,
-            loading: false,
-            // data:[
-            //     {key:1,label:"选项1"},
-            //     {key:2,label:"选项2"},
-            //     {key:3,label:"选项3"}
-            // ],
-            // value:[],
-            data: generateData(),
-        value: [1, 4]
+            props: { multiple: true },
+            options: [{
+            value: 1,
+            label: '东南',
+            children: [{
+                value: 2,
+                label: '上海',
+                children: [
+                { value: 3, label: '普陀' },
+                { value: 4, label: '黄埔' },
+                { value: 5, label: '徐汇' }
+                ]
+            }, {
+                value: 7,
+                label: '江苏',
+                children: [
+                { value: 8, label: '南京' },
+                { value: 9, label: '苏州' },
+                { value: 10, label: '无锡' }
+                ]
+            }, {
+                value: 12,
+                label: '浙江',
+                children: [
+                { value: 13, label: '杭州' },
+                { value: 14, label: '宁波' },
+                { value: 15, label: '嘉兴' }
+                ]
+            }]
+            }, {
+            value: 17,
+            label: '西北',
+            children: [{
+                value: 18,
+                label: '陕西',
+                children: [
+                { value: 19, label: '西安' },
+                { value: 20, label: '延安' }
+                ]
+            }, {
+                value: 21,
+                label: '新疆维吾尔族自治区',
+                children: [
+                { value: 22, label: '乌鲁木齐' },
+                { value: 23, label: '克拉玛依' }
+                ]
+            }]
+            }]
             
         }
         

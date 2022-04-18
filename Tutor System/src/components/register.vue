@@ -271,7 +271,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .register {
   background: url("../assets/img/实名认证.svg");
   background-size: 125% 130%;
@@ -298,5 +298,62 @@ export default {
   background-image: linear-gradient(-180deg, #fff, #f4f4f4);
   -webkit-box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1);
   box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1);
+}
+.logincontent {
+    width: 80%;
+    margin: 0 auto;
+    position: relative;
+}
+
+.logincontent .myform {
+    /* margin-left: 60%; */
+    z-index: 2;
+    width: 400px;
+    /* height: 450px; */
+    background: #fff;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#f4f4f4));
+    background-image: -webkit-linear-gradient(top, #fff, #f4f4f4);
+    background-image: -moz-linear-gradient(top, #fff 0, #f4f4f4 100%);
+    background-image: linear-gradient(-180deg, #fff, #f4f4f4);
+    -webkit-box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .1);
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .1);
+}
+
+.logincontent .myform .loginlogo {
+    margin-bottom: 20px;
+}
+
+
+/* login表格样式 */
+
+.itemgroup {
+    padding: 60px 25px;
+    background-color: #fff;
+    margin: 10px;
+}
+
+.title {
+    font-size: 30px;
+    font-weight: 600;
+    margin-bottom: 70px;
+}
+
+.logincontent .myform .btn {
+    width: 100%;
+}
+
+.footer {
+    background-color: rgb(109, 109, 109);
+}
+
+
+body>.el-container {
+    margin-bottom: 0px;
+}
+.loginpageback {
+    padding: 4% 0;
+    background-color: #66b5cd;
 }
 </style>

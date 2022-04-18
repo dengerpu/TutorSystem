@@ -182,7 +182,7 @@
                             <!-- 文字 -->
                             <span>成长管理</span>
                         </template>
-                         <el-menu-item index="/mystudent"   @click="saveNavState('/mystudent')">
+                         <el-menu-item index="/mystudent" @click="saveNavState('/mystudent')">
                             <template slot="title">
                                 <i class="el-icon-connection"></i>
                                 <span>我的学生</span>

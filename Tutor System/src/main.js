@@ -6,7 +6,7 @@ import './plugins/element.js'
 
 // 导入全局样式表
 import './assets/css/global.css'
-import './assets/css/style.css'
+// import './assets/css/style.css'
 
 //导入字体图标
 import './assets/fonts/iconfont.css'

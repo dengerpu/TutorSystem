@@ -37,7 +37,10 @@ import {
     Timeline,
     TimelineItem,
     Drawer,
-    Transfer
+    Transfer,
+    Descriptions,
+    DescriptionsItem,
+    Divider
 } from 'element-ui'
 
 
@@ -76,6 +79,9 @@ Vue.use(Timeline)
 Vue.use(TimelineItem)
 Vue.use(Drawer)
 Vue.use(Transfer)
+Vue.use(Descriptions)
+Vue.use(DescriptionsItem)
+Vue.use(Divider)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm;

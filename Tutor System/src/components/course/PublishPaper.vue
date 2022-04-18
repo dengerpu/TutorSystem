@@ -17,28 +17,30 @@
                             v-for="item in options"
                             :key="item.value"
                             :label="item.label"
-                            :value="item.value">
+                            :value="item.value"
+                            >
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    
-                <vue-editor v-model="ruleForm.content"></vue-editor>
-                <el-upload
-                  class="upload-demo"
-                  drag
-                  action="http://localhost:8888/upload"
-                  :on-success="handleAvatarSuccess"
-                  multiple>
-                  <i class="el-icon-upload"></i>
-                  <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                  <div class="el-upload__tip" slot="tip">请上传上传附件</div>
-                </el-upload>
+                    <el-form-item label="内容" prop="content">
+                        <vue-editor v-model="ruleForm.content"></vue-editor>
+                    </el-form-item>
+                    <el-form-item label="上传文件">
+                      <el-upload
+                        class="upload-demo"
+                        drag
+                        action="http://localhost:8888/upload"
+                        :on-success="handleAvatarSuccess"
+                        multiple>
+                        <i class="el-icon-upload"></i>
+                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                      </el-upload>
+                    </el-form-item>
                 <el-form-item class="from_bottom">
-                     <el-button type="warning" icon="el-icon-message">邮箱通知</el-button>
                     <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
                     <el-button @click="resetForm('ruleForm')">重置</el-button>
                 </el-form-item>
-                </el-form>
+              </el-form>
             
         </el-card>
     </div>
@@ -73,8 +75,11 @@ export default {
           title: [
             { required: true, message: '请输入标题', trigger: 'blur' },
           ],
-           type: [
+          type: [
             { required: true, message: '请输入类型', trigger: 'blur' },
+          ],
+          content: [
+            { required: true, message: '请输入内容', trigger: 'blur' },
           ]
         },
     };
@@ -107,7 +112,7 @@ export default {
          //获取学生姓名
       async getStudentName(id){
         const {data:res} = await this.$http.get('/editstudent',{params:{"id":id}});
-        if(res.status!=200){
+       if(res.status!=200){
               this.ruleForm.author = "未知"
               return this.$message.error(res.msg)
           }else if(res.status==200){
@@ -137,8 +142,6 @@ export default {
               return fmt; 
           } 
             //this.ruleForm.update_time = new Date().format("yyyy-MM-dd hh:mm:ss");
-            this.ruleForm.sid = parseInt(window.sessionStorage.getItem("sid"));
-            this.getStudentName(sid);
             this.ruleForm.create_time = new Date();
             this.ruleForm.update_time = this.ruleForm.create_time;
             this.ruleForm.enclosure = this.uploadUrl;
@@ -156,7 +159,8 @@ export default {
         },
     },
     created(){
-       //this.getStudentName(1);
+      this.ruleForm.sid = parseInt(window.sessionStorage.getItem("sid"));
+      this.getStudentName(this.ruleForm.sid);
     }
 }
 </script>
@@ -171,8 +175,9 @@ export default {
 .from_bottom{
     margin-top: 20px;
 }
-.upload-demo{
-  margin: 20px 0 0 20px;
+.el-upload{
+  display: block!important;
+  float: left;
 }
 
 </style>

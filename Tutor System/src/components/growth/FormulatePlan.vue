@@ -1,7 +1,8 @@
 <template>
     <div>
-       <el-transfer v-model="value"
-             :data="data"></el-transfer>
+       <div class="block">
+          <el-transfer v-model="value" :data="data"></el-transfer>
+      </div>
     </div>
 </template>
 
@@ -16,7 +17,7 @@ export default {
     
   },
     data(){
-          const generateData = _ => {
+       const generateData = _ => {
         const data = [];
         for (let i = 1; i <= 15; i++) {
           data.push({
@@ -27,26 +28,27 @@ export default {
         }
         return data;
       };
-        return{
-          times:'',
-                   data: generateData(),
-        value: []
-        }
+      return {
+        data: generateData(),
+        value: [1, 4]
+      };
         
     },
     methods:{
-     
+     getInfo(){
+       console.log(this.value);
+     }
     }
 }
 </script>
 
 <style lang="less">
-.el-transfer-panel__item{
-    display:  inline-block!important;
-}
-.el-checkbox__label{
-    display: inline-block!important;
-}
+// .el-transfer-panel__item{
+//     display:  inline-block!important;
+// }
+// .el-checkbox__label{
+//     display: inline-block!important;
+// }
 // .el-transfer-panel__item.el-checkbox .el-checkbox__label{
 //     display: inline-block;
 // }

@@ -150,7 +150,7 @@ export default {
         },
          // 跳转到详情页面
         getDetails(id){
-            this.$router.push({path:"/noticedetails",query:{id:id}});
+            this.$router.push({path:"/paperdetails",query:{id:id}});
         },
        
     },
