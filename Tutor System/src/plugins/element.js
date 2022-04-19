@@ -40,7 +40,9 @@ import {
     Transfer,
     Descriptions,
     DescriptionsItem,
-    Divider
+    Divider,
+    PageHeader,
+    Avatar
 } from 'element-ui'
 
 
@@ -82,6 +84,8 @@ Vue.use(Transfer)
 Vue.use(Descriptions)
 Vue.use(DescriptionsItem)
 Vue.use(Divider)
+Vue.use(PageHeader)
+Vue.use(Avatar)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm;

@@ -41,7 +41,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
-                      <el-button type="warning" @click="Agree(scope.row.id)">申请</el-button>
+                      <el-button type="warning" @click="Agree(scope.row.id)" size="mini">申请</el-button>
                     </template>
                 </el-table-column>
             </el-table>

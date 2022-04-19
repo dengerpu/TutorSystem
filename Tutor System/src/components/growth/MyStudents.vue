@@ -34,9 +34,11 @@
                       <el-link type="primary" @click="getDetails(scope.row.id)">点击查看</el-link>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="180px">
+                <el-table-column label="操作" width="260px">
                     <template slot-scope="scope">
-                        <el-button type="warning" @click="dialog = true" class="el-icon-help" size="mini">制定培养计划</el-button>
+                        <el-button type="warning" @click="savePlan(scope.row)" class="el-icon-help" size="mini">制定培养计划</el-button>
+                                             <!-- 删除按钮 -->
+                        <el-button type="danger" icon="el-icon-delete" size="mini" @click="removePlanById(scope.row.id)">删除计划</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -113,13 +115,18 @@ export default {
             data:[{key:"暂无",value:"暂无"}],
             value: [],
             plan:'',
+            planInfo:{},
             options: [{
             value: '网络安全',
             label: '网络安全'
             }, {
-            value: '软件开发',
-            label: '软件开发'
+            value: '前端',
+            label: '前端'
             }, {
+            value: '后端',
+            label: '后端'
+            }
+            , {
             value: '人工智能',
             label: '人工智能'
             }],
@@ -204,7 +211,9 @@ export default {
             }, {
             key: 'ReactNative',
             value: 'ReactNative'
-            }, {
+            }],
+            options3:[
+                 {
             key: 'Java基础',
             value: 'Java基础'
             },
@@ -229,7 +238,8 @@ export default {
             }, {
             key: 'SpringBoot',
             value: 'SpringBoot'
-            }]
+            }
+            ]
         };
             
         },
@@ -255,14 +265,16 @@ export default {
                     this.plan +=this.value[i];
                 }
             }
-            console.log(this.plan);
+           // console.log(this.plan);
         },
         //获取内容
         getData(){
              if(this.optionsValue=="网络安全"){
                 this.data = this.options1;
-            }else if(this.optionsValue=="软件开发"){
+            }else if(this.optionsValue=="前端"){
                 this.data = this.options2;
+            }else if(this.optionsValue=="后端"){
+                this.data = this.options3;
             }else{
                 this.data = [{key:"暂无",value:"暂无"}];
             }
@@ -281,19 +293,76 @@ export default {
              //再次调用接口查找用户
              this.getStudentList();
         },
-         handleClose(done) {
-            this.$confirm('确定要提交培养计划吗？')
-                .then(_ => {
-                    console.log("提交");
-                    this.dialog = false;
-                })
-                .catch(_ => {
-                    console.log("异常");
-                });
-            },
-            cancelForm() {
-                this.dialog = false;
+        savePlan(planinfo){
+            this.planInfo.username = planinfo.username;
+            this.planInfo.sid = planinfo.id;
+            this.dialog = true;
+        },
+        //保存培养计划
+        async handleClose(done) {
+            this.planInfo.create_time = new Date();
+            this.planInfo.update_time = this.planInfo.create_time;
+            this.planInfo.plan = this.plan;
+            this.planInfo.direction = this.optionsValue;
+            this.planInfo.tid = parseInt(window.sessionStorage.getItem("tid"));
+            //console.log(this.planInfo)
+            const confirmResult = await this.$confirm('此操作将保存该计划, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+            }).catch(err=>err);  //相当于err => {return err}
+        
+          // console.log(confirmResult)
+          if(confirmResult != 'confirm'){
+              this.$message.info('已取消')
+          }
+           if(confirmResult == 'confirm'){
+            const{data:res}= await this.$http.post("/plan",this.planInfo)
+            if(res.status==400){
+                return  this.$message.error(res.msg);
             }
+            if(res.status==401){
+                return  this.$message.error(res.msg);
+            }
+            if(res.status==200){
+                this.$message.success(res.msg);
+                this.planInfo = {};
+                this.optionsValue = '';
+                this.value = [];
+                this.dialog = false;
+            }      
+          }   
+        },
+         //根据ID删除用户
+        async removePlanById(id){
+            const confirmResult = await this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+            }).catch(err=>err);  //相当于err => {return err}
+        
+          // console.log(confirmResult)
+          if(confirmResult != 'confirm'){
+              this.$message.info('已取消删除')
+          }
+           if(confirmResult == 'confirm'){
+              const {data:res} = await this.$http.get("/delplan",{params:{"sid":id}})
+              if(res.status!=200){
+                return this.$message.error(res.msg);
+            }
+            if(res.status==200){
+              this.getStudentList();
+              this.$message.success(res.msg);
+            }
+          }
+        },
+         // 跳转到详情页面
+        getDetails(id){
+            this.$router.push({path:"/plandetails",query:{id:id}});
+        },
+        cancelForm() {
+            this.dialog = false;
+        }
     }
 }
 </script>

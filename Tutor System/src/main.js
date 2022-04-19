@@ -11,6 +11,9 @@ import './assets/css/global.css'
 //导入字体图标
 import './assets/fonts/iconfont.css'
 
+// 导入echarts插件
+import * as echarts from 'echarts'
+
 import axios from 'axios'
 
 //配置请求的根路径
@@ -23,7 +26,7 @@ axios.interceptors.request.use(config=>{
   return config
 })
 Vue.prototype.$http = axios
-
+Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false
 
 new Vue({

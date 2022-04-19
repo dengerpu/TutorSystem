@@ -7,6 +7,7 @@
                 <img class="imgBox" src="../assets/img/logo.png" alt="">
                 <span>导师制下的学生成长管理系统</span>
             </div>
+            <div class="block"><el-avatar :size="50" :src="circleUrl"></el-avatar></div>
             <el-button type="info" @click="logout">退出</el-button>
         </el-header>
         <!-- 页面主题区域 -->
@@ -218,7 +219,8 @@ export default {
             isCollapse:false,  //菜单的切换
             activePath:'' ,   //导航栏切换，高亮显示
             username:'',
-            type:''
+            type:'',
+            circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
         }
     },
     methods:{

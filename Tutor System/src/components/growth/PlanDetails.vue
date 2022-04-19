@@ -4,7 +4,7 @@
        <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>成长管理</el-breadcrumb-item>
-            <el-breadcrumb-item>我的培养计划</el-breadcrumb-item>
+            <el-breadcrumb-item>计划详情</el-breadcrumb-item>
         </el-breadcrumb>
         <el-card class="box-card">
             <el-page-header @back="goBack" :content="content">
@@ -20,7 +20,8 @@
 <script>
 export default {
   created(){
-        this.sid = parseInt(window.sessionStorage.getItem("sid"));
+        this.tid = parseInt(window.sessionStorage.getItem("tid"));
+        this.getStudentInfo();
         this.getPlanInfo();
         
   },
@@ -32,7 +33,6 @@ export default {
         planInfo:{},
         studentInfo:{},
         data:[],
-        sid:0,
         dataStr:[],
         content:'学习路线',
         option: {
@@ -102,9 +102,22 @@ export default {
         
   },
     methods:{
+            //获取用户详情信息
+        async getStudentInfo(){
+            const id = this.$route.query.id;  //学生id
+            const {data:res} = await this.$http.get('/findstudent',{params:{"id":id}});
+               // console.log(res);
+            if(res.status!=200){
+                this.$message.console.error(res.msg);
+            }
+            if(res.status==200){
+                this.studentInfo = res.data;
+            }
+        },
           //获取用户详情信息
         async getPlanInfo(){
-            const {data:res} = await this.$http.get('/sidplan',{params:{"sid":this.sid}});
+           const sid = this.$route.query.id;  //学生id
+            const {data:res} = await this.$http.get('/sidplan',{params:{"sid":sid}});
             if(res.status!=200){
                 this.$message.console.error(res.msg);
             }
@@ -117,11 +130,11 @@ export default {
                         name:this.dataStr[i]
                     })
                 }
-                console.log(this.option)
+                //console.log(this.option)
                  var mychartDom = this.$echarts.init(document.getElementById('main'));
                  this.option.legend.data = this.dataStr;
                  this.option.series[0].data = this.data;
-                 this.content = res.data.direction+"学习路线";
+                 this.content = this.studentInfo.name+":"+res.data.direction+"学习路线";
                  mychartDom.setOption(this.option);
                 //console.log(this.data)
             }

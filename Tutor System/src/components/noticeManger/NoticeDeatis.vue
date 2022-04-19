@@ -7,7 +7,7 @@
              <el-breadcrumb-item>通知详情</el-breadcrumb-item>
         </el-breadcrumb>
         <el-card>
-             <el-button round class="el-icon-caret-left goback" @click="goBack">返回</el-button>
+             <el-button round class="el-icon-caret-left goback" size="mini" @click="goBack">返回</el-button>
             	<h2>{{noticeInfo.title}}</h2>
                 <p class="one">发布时间：<em class="blue">{{noticeInfo.date}}</em>&nbsp;&nbsp;&nbsp;作者：<em class="blue">{{noticeInfo.author}}</em><em class="gray">（<em id="num">80</em>人点击）</em></p>
                 <hr/>

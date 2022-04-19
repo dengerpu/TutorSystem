@@ -752,8 +752,7 @@ export default {
             }
             if(res.status==200){
               this.getStudentList();
-                this.$message.success(res.msg)
-                
+              this.$message.success(res.msg);
             }
           }
         },

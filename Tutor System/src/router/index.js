@@ -22,7 +22,7 @@ import NoticeDetails from '../components/noticeManger/NoticeDeatis.vue'
 import TimeTable from '../components/course/Timetable.vue'
 import PublishArtile from '../components/noticeManger/PublishAtricle.vue'
 import PerAnalysis from '../components/course/PerformanceAnalysis.vue'
-import FormulatePlan from '../components/growth/FormulatePlan.vue'
+import PlanDetails from '../components/growth/PlanDetails.vue'
 import MyGrowthPlan from '../components/growth/MyGrowthPlan.vue'
 import MyStudent from '../components/growth/MyStudents.vue'
 import PaperManage from '../components/course/PaperManage.vue'
@@ -66,7 +66,7 @@ const routes = [
       {path:'/noticedetails',component:NoticeDetails},
       {path:'/myApplation',component:MyApplation},
       {path:'/myplan',component:MyGrowthPlan},
-      {path:'/formulateplan',component:FormulatePlan},
+      {path:'/PlanDetails',component:PlanDetails},
       {path:'/mystudent',component:MyStudent},
       {path:'/paper',component:PaperManage},
       {path:'/publishpaper',component:PublishPaper},
