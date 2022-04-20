@@ -206,7 +206,7 @@ export default {
       
      if(res.status==200){
         window.sessionStorage.setItem("tid",res.data);
-        console.log("tid:"+res.data);
+        //console.log("tid:"+res.data);
       }
     },
     // 登录

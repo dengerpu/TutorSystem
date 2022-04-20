@@ -7,8 +7,9 @@
                 <img class="imgBox" src="../assets/img/logo.png" alt="">
                 <span>导师制下的学生成长管理系统</span>
             </div>
-            <div class="block"><el-avatar :size="50" :src="circleUrl"></el-avatar></div>
-            <el-button type="info" @click="logout">退出</el-button>
+            <div class="block"><el-avatar class="imgBox" :size="50" :src="circleUrl"></el-avatar>
+                <el-button type="info" @click="logout">退出</el-button>
+            </div>   
         </el-header>
         <!-- 页面主题区域 -->
         <el-container>
@@ -213,6 +214,13 @@ export default {
     created(){
         this.getJurisdiction(); //获取菜单
         this.activePath = window.sessionStorage.getItem('activePath');
+        if(this.type=="admin"){
+            this.circleUrl = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fi.qqkou.com%2Fi%2F0a3305298991x2024211813b26.jpg&refer=http%3A%2F%2Fi.qqkou.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653006468&t=c1887dd493be8a7b4a0820c495cbd04e";
+        }else if(this.type=="student"){
+            this.getStudentInfo();
+        }else if(this.type=="teacher"){
+            this.getTeacherInfo();
+        }
     },
     data(){
         return{
@@ -220,7 +228,9 @@ export default {
             activePath:'' ,   //导航栏切换，高亮显示
             username:'',
             type:'',
-            circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
+            studentInfo:{},
+            teacherInfo:{},
+            circleUrl: "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fi.qqkou.com%2Fi%2F0a3305298991x2024211813b26.jpg&refer=http%3A%2F%2Fi.qqkou.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653006468&t=c1887dd493be8a7b4a0820c495cbd04e",
         }
     },
     methods:{
@@ -241,6 +251,31 @@ export default {
         saveNavState(activePath){
             window.sessionStorage.setItem('activePath',activePath);
             this.activePath = activePath;
+        },
+        //获取用户详情信息
+        async getStudentInfo(){
+            const sid = parseInt(window.sessionStorage.getItem("sid"));
+            const {data:res} = await this.$http.get('/findstudent',{params:{"id":sid}});
+               // console.log(res);
+            if(res.status!=200){
+                this.$message.console.error(res.msg);
+            }
+            if(res.status==200){
+                this.studentInfo = res.data;
+                this.circleUrl = res.data.image;
+            }
+        },
+        async getTeacherInfo(){
+            const tid = parseInt(window.sessionStorage.getItem("tid"));
+            const {data:res} = await this.$http.get('/editteacher',{params:{"id":tid}});
+               // console.log(res);
+            if(res.status!=200){
+                this.$message.console.error(res.msg);
+            }
+            if(res.status==200){
+                this.teacherInfo = res.data;
+                this.circleUrl = res.data.image;
+            }
         }
     }
 }
@@ -296,5 +331,8 @@ export default {
     color: #fff;
     letter-spacing: 0.3 em;
     cursor: pointer;
+}
+.imgBox{
+    margin:0 10px;
 }
 </style>

@@ -9,10 +9,10 @@
         <!-- 卡片视图区域 -->
         <el-card class="box-card">
             <el-row :gutter="24">
-                <el-col :span="1" >
+                <el-col :span="2" >
                    <el-button  :type="buttontype1" @click="getTeacher">老师</el-button>
                 </el-col>
-                <el-col :span="4">
+                <el-col :span="2">
                     <el-button  :type="buttontype2" @click="getStudent">学生</el-button>
                 </el-col>
             </el-row>

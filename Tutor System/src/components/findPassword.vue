@@ -63,12 +63,12 @@
                   ></el-input>
                 </el-form-item>
 
-                <el-form-item  label="选择用户" prop="choice" style="margin-left:5px; text-align: center" >
+                <el-form-item  label="选择用户" prop="type" style="margin-left:5px; text-align: center" >
                   <el-select 
                   style="margin-right:120px; width:300px"
-                    v-model="ruleForm.choice" 
+                    v-model="ruleForm.type" 
                     placeholder="请选择用户类型"
-                    prop="choice">
+                    prop="type">
                     <el-option label="学生" value="student"></el-option>
                     <el-option label="导师" value="teacher"></el-option>
                     <!-- <el-option label="管理员" value="管理员" ></el-option> -->
@@ -185,7 +185,7 @@ export default {
         email: "",
         checkPass: "",
         verifyCode:"",
-        choice:[],
+        type:""
       },
        
       successResponse: [],
@@ -212,7 +212,7 @@ export default {
             
           },
         ],
-        choice: [{ required: true, message: "请选择用户", trigger: "blur" }],
+        type: [{ required: true, message: "请选择用户", trigger: "blur" }],
 
         email: [
           { required: true, message: "请输入邮箱地址", trigger: "blur" },
@@ -246,21 +246,6 @@ export default {
           }
           ).then(successResponse => {
 
-            switch(successResponse.data){
-              case "success":
-                this.$router.push({ name: "login" });
-                window.sessionStorage.setItem("loginuser",this.ruleForm.username);
-                window.sessionStorage.setItem("loginchoice",this.ruleForm.choice);
-                this.$message({message: "修改成功，请重新登录",type: "success", }); 
-                break;
-              case "error":
-                this.$message.error('验证码错误！');
-                break;
-              case "empty":
-                this.$message.error('账号不存在！');
-                break;
-            }
-
           });
         } 
         else {
@@ -269,62 +254,34 @@ export default {
       
       });
     },
-
-    getCheckemail(){
-      //发送邮箱
-        this.checkLoading = true;
-      this.$axios.post('http://localhost:8181/user/getCheckemail', {
-        username: this.ruleForm.username,
-        email: this.ruleForm.email,
-        choice: this.ruleForm.choice
-        }).then(successResponse => {
-        
-        switch(successResponse.data){
-          case "addressError":
-            this.checkLoading = false;
-            this.$message({message: "请确实绑定邮箱!",type: "warning",}); 
-            break;
-            
-            case "error":
-              this.checkLoading = false;
-              this.$message({message: "邮箱地址错误或邮箱不存在!",type: "warning",}); 
-            break;    
-
-            case "userError":
-              this.checkLoading = false;
-              this.$message({message: "用户或选择用户错误!",type: "warning",});
-            break;   
-
-            case "empty":
-              this.checkLoading = false;
-              this.$message({message: "用户不存在",type: "error",}); 
-            break;
-
-            case "success":
-              this.checkLoading=false;
-              this.$message({message: "获取成功!请查看邮箱！",type: "success",}); 
-
-                //验证码发送成功后按钮变化
-                  this.flag = true;//点击之后设置按钮不可取
-                  this.content = this.totalTime + "s后重新发送";//按钮内文本
-                  this.color  = "info"//按钮颜色变化
-                //时间控制
-                let clock = window.setInterval(() => {
-                  this.totalTime--;
-                  this.content = this.totalTime + "s后重新发送";
-                  if (this.totalTime < 0) {
-                    window.clearInterval(clock);
-                    this.content = "重新发送验证码";
-                    this.totalTime = 30;
-                    this.flag = false; //这里重新开启
-                    this.color = "success";
-                  } 
-                }, 1000);
-            break;
-        }
-
-        });
-        
+    //发送验证码
+    async getCheckemail(){
+      const {data:res} = await this.$http.get("/findpassword",{params:{
+        "username": this.ruleForm.username,
+        "email": this.ruleForm.email,
+        "type": this.ruleForm.type
+        }})
+      if(res.status!=200){
+        return this.$message.error(res.msg);
+      }else if(res.status==200){
+          this.$message.success(res.msg);
+        //验证码发送成功后按钮变化
+          this.flag = true;//点击之后设置按钮不可取
+          this.content = this.totalTime + "s后重新发送";//按钮内文本
+          this.color  = "info"//按钮颜色变化
+          //时间控制
+          let clock = window.setInterval(() => {
+            this.totalTime--;
+            this.content = this.totalTime + "s后重新发送";
+            if (this.totalTime < 0) {
+              window.clearInterval(clock);
+              this.content = "重新发送验证码";
+              this.totalTime = 60;
+              this.flag = false; //这里重新开启
+              this.color = "success";
+              } 
+          }, 1000);
+      }   
     },
 
     resetForm(formName) {

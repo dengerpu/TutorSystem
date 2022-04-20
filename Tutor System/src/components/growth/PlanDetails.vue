@@ -114,7 +114,7 @@ export default {
                 this.studentInfo = res.data;
             }
         },
-          //获取用户详情信息
+          //获取计划详情信息
         async getPlanInfo(){
            const sid = this.$route.query.id;  //学生id
             const {data:res} = await this.$http.get('/sidplan',{params:{"sid":sid}});
