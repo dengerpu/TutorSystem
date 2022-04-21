@@ -75,19 +75,18 @@
                   </el-select>
                 </el-form-item>
 
-              <el-form-item label="邮箱验证码" prop="verifyCode">
+              <el-form-item label="邮箱验证码" prop="code">
                  <div >
                   <el-input 
                     placeholder="请输入验证码"
                     prefix-icon="el-icon-picture-outline"
-                    v-model.trim="ruleForm.verifyCode"
+                    v-model="ruleForm.code"
                      style="width:150px"
                   ></el-input>
 
                   <el-button :type="color" 
                   style="margin-left:30px ; width:120px; text-align: center" 
                   plain 
-                  v-loading.fullscreen.lock="checkLoading"
                   @click="getCheckemail()" 
                   :disabled="flag">{{content}}</el-button>
                 </div>
@@ -175,7 +174,6 @@ export default {
        flag: false,//按钮是否可取
        totalTime: 30,//倒计时时间
        color:"success",//按钮颜色类型
-       checkLoading:false,//缓存
        
        codeTime:30,
 
@@ -184,20 +182,20 @@ export default {
         password: "",
         email: "",
         checkPass: "",
-        verifyCode:"",
+        code:"",
         type:""
       },
        
       successResponse: [],
 
       rules: {
-        verifyCode: [
+        code: [
           { required: true, message: "请输入验证码", trigger: "blur" },
           ],
         username: [
           { required: true, message: "请输入账号", trigger: "blur" },
-          { min: 10, message: "请输入正确的学号/职工号", trigger: "blur" },
-          { max: 10, message: "请输入正确的学号/职工号", trigger: "blur" },
+          { min: 5, message: "请输入正确的学号/职工号", trigger: "blur" },
+          { max: 11, message: "请输入正确的学号/职工号", trigger: "blur" },
           {
             validator: function (rule, value, callback) {
               //校验空格
@@ -236,17 +234,21 @@ export default {
   methods: {
 
     submitForm(formName) {
-          this.$refs[formName].validate((valid) => {
+          this.$refs[formName].validate( async (valid) => {
         if (valid) {       
-          this.$axios
-          .post('http://localhost:8181/user/updatePassword/', {
+          const {data:res} = await this.$http.post('/findpassword', {
             username:this.ruleForm.username,
             password:this.ruleForm.password,
-            choice:this.ruleForm.verifyCode,//验证码
+            email:this.ruleForm.email,
+            code:this.ruleForm.code,//验证码
+            type:this.ruleForm.type,
+          })
+          if(res.status!=200){
+            this.$message.error(res.msg);
+          }else if(res.status==200){
+            this.ruleForm = {};
+            this.$message.success(res.msg);
           }
-          ).then(successResponse => {
-
-          });
         } 
         else {
           this.$message.error('修改失败！');
@@ -261,6 +263,7 @@ export default {
         "email": this.ruleForm.email,
         "type": this.ruleForm.type
         }})
+        console.log(res);
       if(res.status!=200){
         return this.$message.error(res.msg);
       }else if(res.status==200){
