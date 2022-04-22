@@ -72,7 +72,8 @@
 
               <el-form-item label=" " prop="state"  label-width="50px">
                     <div style="text-align: left">
-                   <el-button type="primary" size="small"  @click="sendNotice()">确定发送</el-button>
+                   <el-button type="primary" size="small"  @click="sendNotice('NoticeForm')">确定发送</el-button>
+                   <el-button type="warning" size="small"  @click="sendEmail('NoticeForm')">保存并邮箱通知</el-button>
                     </div>
               </el-form-item>
             </el-col>
@@ -280,9 +281,14 @@ export default {
         currentPage: 1,
         total: null,
         pageSize: 5,
-        rules:{
-            content: [{ required: true, message: "公告内容不能为空", trigger: "blur" },]
-        }
+       rules: {
+          title: [
+            { required: true, message: '请输入标题', trigger: 'blur' },
+          ],
+          content: [
+            { required: true, message: '请输入内容', trigger: 'blur' },
+          ]
+        },
        } 
     },
 
@@ -337,19 +343,58 @@ export default {
               this.NoticeForm.tid = res.data.tid;
           }
       },
-      async sendNotice(){
-        //console.log(this.NoticeForm);
-        this.NoticeForm.update_time = this.NoticeForm.create_time;
-          const{data:res}= await this.$http.post("/notices",this.NoticeForm)
-               // console.log(res);
-                if(res.status!=200){
-                  return  this.$message.error(res.msg);
+      //发布通知
+      async sendNotice(formName){
+         this.$refs[formName].validate( async (valid) => {
+              if (valid) {
+               //console.log(this.NoticeForm);
+                this.NoticeForm.update_time = this.NoticeForm.create_time;
+                  const{data:res}= await this.$http.post("/notices",this.NoticeForm)
+                      // console.log(res);
+                        if(res.status!=200){
+                          return  this.$message.error(res.msg);
+                        }
+                        if(res.status==200){
+                            this.$message.success(res.msg);
+                            this.getNoticeList();
+                            this.sendNoticeDataDialog = false;
+                        }
+          } else {
+            this.$message.error("必填项未填");
+            return false;
+          }
+        });
+      },
+      //发布通知并邮箱通知
+      async sendEmail(formName){
+          this.$refs[formName].validate( async (valid) => {
+              if (valid) {
+                const username = window.sessionStorage.getItem("username");
+                if(username=='admin'){
+                    //则向所有用户发送通知
+                    this.sendNotice(this.NoticeForm);
+                    const {data:res} = await this.$http.get('/sendusers',{params:{"title":this.NoticeForm.title}});
+                    if(res.status==200){
+                      this.$message.success(res.msg);
+                    }else{
+                      this.$message.error(res.msg);
+                    }
+                }else{
+                    //老师则只向自己的学生发
+                    const tid = parseInt(window.sessionStorage.getItem("tid"));
+                    this.sendNotice(this.NoticeForm);
+                    const {data:res} = await this.$http.get('/sendmystudent',{params:{"title":this.NoticeForm.title,"tid":tid}});
+                    if(res.status==200){
+                      this.$message.success(res.msg);
+                    }else{
+                      this.$message.error(res.msg);
+                    }
                 }
-                if(res.status==200){
-                    this.$message.success(res.msg);
-                    this.getNoticeList();
-                    this.sendNoticeDataDialog = false;
-                }
+          } else {
+            this.$message.error("必填项未填");
+            return false;
+          }
+        });
       },
       //发布公告展示
     sendNoticeDialog(){

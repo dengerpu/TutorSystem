@@ -172,7 +172,7 @@ export default {
     return {
        content: '获取验证码', // 获取验证码按钮文字
        flag: false,//按钮是否可取
-       totalTime: 30,//倒计时时间
+       totalTime: 60,//倒计时时间
        color:"success",//按钮颜色类型
        
        codeTime:30,
@@ -247,6 +247,7 @@ export default {
             this.$message.error(res.msg);
           }else if(res.status==200){
             this.ruleForm = {};
+             this.$router.push({path:"/login"});
             this.$message.success(res.msg);
           }
         } 

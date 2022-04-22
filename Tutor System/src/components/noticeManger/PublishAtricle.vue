@@ -23,7 +23,7 @@
                   <div class="el-upload__tip" slot="tip">请上传上传附件</div>
                 </el-upload>
                 <el-form-item class="from_bottom">
-                     <el-button type="warning" icon="el-icon-message">邮箱通知</el-button>
+                     <el-button type="warning" icon="el-icon-message" @click="sendEmail('ruleForm')">邮箱通知</el-button>
                     <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
                     <el-button @click="resetForm('ruleForm')">重置</el-button>
                 </el-form-item>
@@ -133,6 +133,38 @@ export default {
               }
             
         },
+        //添加用户并发送邮件
+        async sendEmail(formName){
+           this.$refs[formName].validate( async (valid) => {
+              if (valid) {
+                const username = window.sessionStorage.getItem("username");
+                if(username=='admin'){
+                    //则向所有用户发送通知
+                    this.saveText();
+                    const {data:res} = await this.$http.get('/sendusers',{params:{"title":this.ruleForm.title}});
+                    if(res.status==200){
+                      this.$message.success(res.msg);
+                    }else{
+                      this.$message.error(res.msg);
+                    }
+                }else{
+                    //老师则只向自己的学生发
+                    const tid = parseInt(window.sessionStorage.getItem("tid"));
+                    this.saveText();
+                    const {data:res} = await this.$http.get('/sendmystudent',{params:{"title":this.ruleForm.title,"tid":tid}});
+                    if(res.status==200){
+                      this.$message.success(res.msg);
+                    }else{
+                      this.$message.error(res.msg);
+                    }
+                }
+          } else {
+            this.$message.error("内容不合法");
+            return false;
+          }
+        });
+           
+        }
     }
 }
 </script>

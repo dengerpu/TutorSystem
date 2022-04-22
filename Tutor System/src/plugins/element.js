@@ -42,8 +42,11 @@ import {
     DescriptionsItem,
     Divider,
     PageHeader,
-    Avatar
+    Avatar,
+    Radio,
+    RadioGroup
 } from 'element-ui'
+import VueRouter from 'vue-router'
 
 
 Vue.use(Button)
@@ -86,6 +89,8 @@ Vue.use(DescriptionsItem)
 Vue.use(Divider)
 Vue.use(PageHeader)
 Vue.use(Avatar)
+Vue.use(Radio)
+Vue.use(RadioGroup)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm;

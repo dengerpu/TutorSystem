@@ -246,16 +246,16 @@ export default {
         }
     },
     findAll(){
-       const _this = this;
-        _this.ruleForm.username = window.sessionStorage.getItem("username");
+      //  const _this = this;
+      //   _this.ruleForm.username = window.sessionStorage.getItem("username");
 
-        axios.get('http://localhost:8181/data/findAllByUsername/'+_this.ruleForm.username).then(function(resp){
-         _this.ruleForm = resp.data
-      // console.log(_this.value)
-        axios.get('http://localhost:8181/leave/findClass/'+_this.ruleForm.realname).then(function(resp){
-                _this.classes = resp.data;
-            }); 
-         });
+      //   this.$http.get('http://localhost:8181/data/findAllByUsername/'+_this.ruleForm.username).then(function(resp){
+      //    _this.ruleForm = resp.data
+      // // console.log(_this.value)
+      //   this.$http.get('http://localhost:8181/leave/findClass/'+_this.ruleForm.realname).then(function(resp){
+      //           _this.classes = resp.data;
+      //       }); 
+      //    });
      
     },
     editData(formName) {
