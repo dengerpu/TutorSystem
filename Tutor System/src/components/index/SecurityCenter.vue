@@ -27,7 +27,7 @@
                     更换邮箱
             </h2>
 
-            <el-form-item label="用户" prop="username"  v-if="select = false" >
+            <el-form-item label="用户" prop="username" >
               <el-input
                 type="text"
                 disabled
@@ -40,16 +40,16 @@
               <el-input
                 placeholder="请输入旧邮箱"
                 prefix-icon="el-icon-message"
-                v-model.trim="ruleForm.oldemail"
+                v-model.trim="ruleForm.email"
               ></el-input>
             </el-form-item>
 
-              <el-form-item label="邮箱验证码" prop="checkemail">
+              <el-form-item label="邮箱验证码">
               <el-col :span="12"> 
                 <el-input 
                   placeholder="请输入验证码"
                   prefix-icon="el-icon-picture-outline"
-                  v-model.trim="ruleForm.checkemail"
+                  v-model.trim="ruleForm.code"
                   style="width:150px margin-left:600px"
                 ></el-input>
               </el-col>
@@ -64,21 +64,12 @@
                 </el-form-item>
 
 
-              <el-form-item label="新邮箱 " prop="newemail">
+              <el-form-item label="新邮箱 " prop="newEmail">
                 <el-input
                   placeholder="请输入新邮箱"
                   prefix-icon="el-icon-message"
-                  v-model.trim="ruleForm.newemail"
+                  v-model.trim="ruleForm.newEmail"
                 ></el-input>
-            </el-form-item>
-
-            <el-form-item label="选择用户" prop="choice"  v-if="select = false">
-              <el-input
-                type="text"
-                disabled
-                v-model.trim="ruleForm.choice"
-                placeholder="请确认当前选择用户"
-              ></el-input>
             </el-form-item>
                 <el-form-item size="small" class="text-center subBtn">
                   <el-button type="primary" @click.prevent="changeEmail('ruleForm')">确定修改</el-button>
@@ -119,18 +110,18 @@
               ></el-input>
             </el-form-item>
 
-                <el-form-item label="旧密码" prop="oldpassword">
+                <el-form-item label="旧密码" prop="password">
                   <el-input
                     type="password"
-                    v-model.trim="ruleForm.oldpassword"
+                    v-model.trim="ruleForm.password"
                     placeholder="请输入旧密码"
                     show-password
                   ></el-input>
                 </el-form-item>
-                <el-form-item label="新密码" prop="newpassword">
+                <el-form-item label="新密码" prop="newPassword">
                   <el-input
                     type="password"
-                    v-model.trim="ruleForm.newpassword"
+                    v-model.trim="ruleForm.newPassword"
                     placeholder="请输入新密码"
                     show-password
                   ></el-input>
@@ -187,7 +178,7 @@
               <el-input
                 placeholder="请输入绑定邮箱"
                 prefix-icon="el-icon-message"
-                v-model.trim="ruleForm.oldemail"
+                v-model.trim="ruleForm.email"
               ></el-input>
             </el-form-item>
 
@@ -306,7 +297,7 @@ export default {
     var validatePass1 = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入密码"));
-      } else if (value === this.ruleForm.oldpassword) {
+      } else if (value === this.ruleForm.password) {
         callback(new Error("新密码不能与旧密码相同!"));
       }
       else if (/[\u4E00-\u9FA5]/g.test(value)) {
@@ -323,7 +314,7 @@ export default {
     var validatePass2 = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请再次输入密码"));
-      } else if (value !== this.ruleForm.newpassword) {
+      } else if (value !== this.ruleForm.newPassword) {
         callback(new Error("两次输入密码不一致!"));
       } else {
         callback();
@@ -338,18 +329,18 @@ export default {
       delDialog:false,//注销账号弹出框
       content: '获取验证码', // 获取验证码按钮文字
       flag: false,//按钮是否可取
-      totalTime: 30,//倒计时时间
+      totalTime: 60,//倒计时时间
       color:"success",//按钮颜色
       checkLoading:false,//缓存
 
       ruleForm: {
         username: '',
-        oldpassword:'',
-        newpassword:'',
+        password:'',
+        newPassword:'',
         checknewpassword:'',
         checkemail:"",
         oldemail:"",
-        newemail:"",
+        newEmail:"",
       },
       userData: {},
 
@@ -359,13 +350,13 @@ export default {
           { min: 2, message: "长度不能少于2个字符", trigger: "blur" },
           { max: 10, message: "长度不能超过10个字符", trigger: "blur" },
         ],
-        oldpassword: [
+        password: [
           { required: true, message: "请输入旧密码", trigger: "blur" },
           { max: 12, message: "长度不能超过12个字符", trigger: "blur" },
           { min: 6, message: "长度不能少于6个字符", trigger: "blur" },
         ],
         
-        newpassword: [
+        newPassword: [
           { required: true, validator: validatePass1, trigger: "blur" },
           { max: 12, message: "长度不能超过12个字符", trigger: "blur" },
           { min: 6, message: "长度不能少于6个字符", trigger: "blur" },
@@ -375,7 +366,7 @@ export default {
           { max: 12, message: "长度不能超过12个字符", trigger: "blur" },
           { min: 6, message: "长度不能少于6个字符", trigger: "blur" },
         ],
-        oldemail: [
+        email: [
           { required: true, message: "请输入邮箱地址", trigger: "blur" },
           {
             type: "email",
@@ -383,7 +374,7 @@ export default {
             trigger: ["blur", "change"],
           },
         ],
-        newemail: [
+        newEmail: [
           { required: true, message: "请输入邮箱地址", trigger: "blur" },
           {
             type: "email",
@@ -400,31 +391,20 @@ export default {
 
     // 修改密码
     changePassword(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(async (valid) => {
         if (valid) {    
-
-          this.$http
-          .post('http://localhost:8181/user/updatePassword/', {
+           const {data:res} = await this.$http.post('/updatepassword', {
             username:this.ruleForm.username,
-            password:this.ruleForm.newpassword,
-            choice:this.ruleForm.oldpassword,//旧密码
+            password:this.ruleForm.password,
+            newPassword:this.ruleForm.newPassword,
+          })
+          if(res.status!=200){
+            this.$message.error(res.msg);
+          }else if(res.status==200){
+            window.sessionStorage.clear();
+            this.$router.push("/login");
+            this.$message.success(res.msg);
           }
-          ).then(successResponse => {
-
-            // 后端返回值判断
-            switch(successResponse.data){
-              case "success":
-                this.$router.push({ name: "login" });
-                this.$message({message: "修改成功，请重新登录",type: "success", }); 
-                break;
-              case "error":
-                this.$message.error('账号密码错误！');
-                break;
-              case "empty":
-                this.$message.error('账号不存在！');
-                break;
-            }
-          });
         } else {
           this.$message.error('修改失败！');
         }
@@ -436,89 +416,55 @@ export default {
     resetForm(formName) {
           this.$refs[formName].resetFields();
         },
-      //获取验证码
-      getCheckemail(){
-         this.checkLoading = true;
-         this.$http.post('http://localhost:8181/user/getCheckemail', {
-            username: this.ruleForm.username,
-            email: this.ruleForm.oldemail,
-            choice: this.ruleForm.choice,
-        }).then(successResponse => {
-        
-        switch(successResponse.data){
-          case "addressError":
-            this.checkLoading = false;
-            this.$message({message: "请输入正确的绑定邮箱!",type: "warning",}); 
-            break;
-            
-            case "error":
-              this.checkLoading = false;
-              this.$message({message: "邮箱地址错误或邮箱不存在!",type: "warning",}); 
-            break;    
-
-            case "userError":
-              this.checkLoading = false;
-              this.$message({message: "用户或选择用户错误!",type: "warning",});
-            break;   
-
-            case "empty":
-              this.checkLoading = false;
-              this.$message({message: "用户不存在",type: "error",}); 
-            break;
-
-            case "success":
-              this.checkLoading=false;
-              this.$message({message: "获取成功!请查看邮箱！",type: "success",}); 
-
-                //验证码发送成功后按钮变化
-                  this.flag = true;//点击之后设置按钮不可取
-                  this.content = this.totalTime + "s后重新发送";//按钮内文本
-                  this.color  = "info"//按钮颜色变化
-                //时间控制
-                let clock = window.setInterval(() => {
-                  this.totalTime--;
-                  this.content = this.totalTime + "s后重新发送";
-                  if (this.totalTime < 0) {
-                    window.clearInterval(clock);
-                    this.content = "重新发送验证码";
-                    this.totalTime = 30;
-                    this.flag = false; //这里重新开启
-                    this.color = "success";
-                  } 
-                }, 1000);
-            break;
-        }
-
-      });
+//发送验证码
+    async getCheckemail(){
+      const {data:res} = await this.$http.get("/findpassword",{params:{
+        "username": this.ruleForm.username,
+        "email": this.ruleForm.email,
+        "type": this.ruleForm.type
+        }})
+       // console.log(res);
+      if(res.status!=200){
+        return this.$message.error(res.msg);
+      }else if(res.status==200){
+          this.$message.success(res.msg);
+        //验证码发送成功后按钮变化
+          this.flag = true;//点击之后设置按钮不可取
+          this.content = this.totalTime + "s后重新发送";//按钮内文本
+          this.color  = "info"//按钮颜色变化
+          //时间控制
+          let clock = window.setInterval(() => {
+            this.totalTime--;
+            this.content = this.totalTime + "s后重新发送";
+            if (this.totalTime < 0) {
+              window.clearInterval(clock);
+              this.content = "重新发送验证码";
+              this.totalTime = 60;
+              this.flag = false; //这里重新开启
+              this.color = "success";
+              } 
+          }, 1000);
+      }   
     },
     //修改邮箱
     changeEmail(formName){
-      this.$refs[formName].validate((valid) => {
-        if (valid) {    
-          this.$http
-          .post('http://localhost:8181/user/changeEmial', {
-              username:this.ruleForm.username,
-              email:this.ruleForm.newemail,
-              verifyCode:this.ruleForm.checkemail,
-          }
-          ).then(successResponse => {
+      this.$refs[formName].validate( async (valid) => {
+        if (valid) {       
+          const {data:res} = await this.$http.post('/updateemail', {
+            username:this.ruleForm.username,
+            newEmail:this.ruleForm.newEmail,
+            code:this.ruleForm.code,//验证码
+          })
+          if(res.status!=200){
+            this.$message.error(res.msg);
+          }else if(res.status==200){
 
-            // 后端返回值判断
-            switch(successResponse.data){
-              case "success":
-                window.location.reload();     
-                this.$message({message: "修改成功！",type: "success", }); 
-                break;
-              case "error":
-                
-                this.$message.error('验证码错误！');
-                break;
-              case "empty":
-                this.$message.error('账号不存在！');
-                break;
-            }
-          });
-        } else {
+            this.changeEmailDialog = false;
+            this.ruleForm.email = this.ruleForm.newEmail;
+            this.$message.success(res.msg);
+          }
+        } 
+        else {
           this.$message.error('修改失败！');
         }
       
@@ -526,56 +472,13 @@ export default {
     },
     //注销账号
     delUser(formName){
-      this.$refs[formName].validate((valid) => {
-        if (valid) {           
-        this.$confirm('注销账号后信息不可恢复，是否确定注销？', '温馨提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-           this.$http
-            .post('http://localhost:8181/user/delUser', {
-              username:this.ruleForm.username,
-              verifyCode:this.ruleForm.checkemail,
-          }
-          ).then(successResponse => {
-
-            // 后端返回值判断
-            switch(successResponse.data){
-              case "success":
-                this.$router.push({ name: "login" });
-                this.$message({message: "账号已注销！",type: "warning", }); 
-                break;
-              case "error":
-                this.$message.error('验证码错误！');
-                break;
-              case "empty":
-                this.$message.error('账号不存在！');
-                break;
-            }
-          });
-
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消退出'
-          });          
-        });
-        } else {
-          this.$message.error('修改失败！');
-        }
-      });
+      alert("请联系管理员");
     },
   },
   created(){
-      var choice = window.sessionStorage.getItem("choice");
-      if(choice === "管理员"){
-          this.$router.push({name: "MasterPage"});
-      }
-          const _this = this 
-     _this.ruleForm.username = window.sessionStorage.getItem("username");
-    this.$http.get('http://localhost:8181/user/findAllByUsername/'+_this.ruleForm.username).then(function(resp){
-         _this.ruleForm = resp.data})
+     this.ruleForm.username = window.sessionStorage.getItem("username");
+     this.ruleForm.type = window.sessionStorage.getItem("type");
+     this.ruleForm.email = window.sessionStorage.getItem('email');
   }
 
 };

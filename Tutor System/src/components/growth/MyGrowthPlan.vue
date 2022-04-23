@@ -7,7 +7,7 @@
             <el-breadcrumb-item>我的培养计划</el-breadcrumb-item>
         </el-breadcrumb>
         <el-card class="box-card">
-            <el-page-header @back="goBack" :content="content">
+            <el-page-header :content="content">
             </el-page-header>
              <el-divider></el-divider>
             <div style="display:flex;">

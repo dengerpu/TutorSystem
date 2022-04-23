@@ -236,11 +236,12 @@ export default {
                   window.sessionStorage.setItem("token","123456");
                   window.sessionStorage.setItem("username",res.data.username);
                   window.sessionStorage.setItem("type",res.data.type);
+                  window.sessionStorage.setItem("email",res.data.email);
                   if(res.data.type=="student"){
                     this.getStudentId(res.data.username);
                   }else if(res.data.type=="teacher"){
                     this.getTeacherId(res.data.username);
-                    console.log("查询教师id成功");
+                    //console.log("查询教师id成功");
                   }
                   //2.通过编程式导航跳到后台主页路由地址是/home
                   this.$router.push("/home")

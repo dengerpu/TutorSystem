@@ -1,6 +1,11 @@
 <template>      
   <el-container style="height: 100%; background: white">
       <el-card  class="box-card">
+                    <!-- 面包屑导航 -->
+       <el-breadcrumb separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>个人中心</el-breadcrumb-item>
+        </el-breadcrumb>
       <el-row>
       <el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24" >
       <div style="text-align:center;" ><!--border:1px solid #000 -->
@@ -10,16 +15,13 @@
 
           <el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
           <div style="text-align:center">
-          <el-form-item label="姓名 " prop="realname" label-width="150px">
+          <el-form-item label="姓名 " prop="name" label-width="150px">
                 <el-input
                 style="width:500px ;"
                   placeholder="请输入姓名"
-                  v-model.trim="ruleForm.realname"
+                  v-model.trim="ruleForm.name"
                 >
                 </el-input>
-                  <div style="text-align:left">
-                <p style="text-align: left;font-size:12px;">真实姓名</p>
-                </div>
             </el-form-item>
             
             </div>
@@ -35,9 +37,6 @@
                   v-model.trim="ruleForm.username"
                 >
                 </el-input>
-                <div style="text-align:left">
-                <p style="text-align: left;font-size:12px;">学号/工号</p>
-                </div>
             </el-form-item>
             </div>
         </el-col>
@@ -61,113 +60,136 @@
       </el-form-item>
       </el-col>
 
-      <el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-show="selectStudent">
+      <el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
       <div style="text-align:center">
-      <el-form-item label="班级 " prop="classes" label-width="150px">
+      <el-form-item label="学院 " prop="college" label-width="150px">
             <el-input
-            
+            disabled
             style="width:500px ;"
-              placeholder="请输入班级"
-              v-model.trim="ruleForm.classes"
+              placeholder="请输入学院"
+              v-model.trim="ruleForm.college"
             >
             </el-input>
         </el-form-item>
         </div>
     </el-col>
 
-      <el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24" v-show="selectTeacher">
-      <el-form-item label="所管班级: "  label-width="150px">
-        <div style="text-align:left;width:500px;" >
-
-        <el-tag :key="tag" v-for="tag in classes" style=" margin-left: 10px" :disable-transitions="false"  
-          type="info" ><i>{{tag}}</i></el-tag>
-
-        </div>
+    <el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+      <div style="text-align:center">
+      <el-form-item label="专业" prop="major" label-width="150px">
+            <el-input
+            disabled
+            style="width:500px ;"
+              placeholder="请输入专业"
+              v-model.trim="ruleForm.major"
+            >
+            </el-input>
         </el-form-item>
-
+        </div>
     </el-col>
 
     <el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24" >
     <div style="text-align:center">
-    <el-form-item label="院系 " prop="dept" label-width="150px" v-show="selectNoLeader">
+    <el-form-item label="邮箱 " prop="email" label-width="150px">
           <el-input
           style="width:500px ;"
-            placeholder="请输入院系"
-            v-model.trim="ruleForm.dept"
+            placeholder="请输入邮箱"
+            v-model.trim="ruleForm.email"
           >
           </el-input>
       </el-form-item>
       </div>
       </el-col>
 
+      <el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24" >
+        <div style="text-align:center">
+        <el-form-item label="手机 " prop="phone" label-width="150px">
+              <el-input
+              style="width:500px ;"
+                placeholder="请输入手机"
+                v-model.trim="ruleForm.phone"
+              >
+              </el-input>
+          </el-form-item>
+          </div>
+        </el-col>
       <el-col :span="24" :xs="12" :sm="12" :md="24" :lg="24" :xl="24">
-        <el-form-item label="用户类型 " prop="choice"    label-width="150px">
-          <el-input
-              disabled
-            placeholder="请输入用户类型"
-            v-model.trim="ruleForm.choice"
-          ></el-input>
-      </el-form-item>
-
-      <el-form-item label=" " prop="state"  label-width="200px">
-            <div style="text-align: left">
-            <el-button type="primary" size="small" @click.prevent="editData('ruleForm')">确定发送</el-button>
-            </div>
-      </el-form-item>
-    </el-col>
+        <el-form-item label-width="150px">
+              <div style="text-align: left">
+                <el-button type="warning" size="small" @click="honordialogVisible = true" >添加个人荣誉</el-button>
+                <el-button type="warning" size="small" @click="introducedialogVisible = true" >添加个人介绍</el-button>
+                <el-button type="warning" size="small" @click="imgdialogVisible = true" >更改头像</el-button>
+              <el-button type="primary" size="small" @click.prevent="editData()">修改</el-button>
+              </div>
+        </el-form-item>
+     </el-col>
       </el-row>
     </el-form>
     </div>
       </el-col>
     </el-row>
     </el-card>
-
+  <!-- 个人荣誉 -->
+    <el-dialog
+      title="个人荣誉"
+      :visible.sync="honordialogVisible"
+      width="30%"
+    >
+      <vue-editor v-model="ruleForm.honor"></vue-editor>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="honordialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="honordialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 个人介绍 -->
+    <el-dialog
+      title="个人介绍"
+      :visible.sync="introducedialogVisible"
+      width="30%"
+    >
+      <vue-editor v-model="ruleForm.introduce"></vue-editor>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="introducedialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="introducedialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+        <!-- 更改头像 -->
+    <el-dialog
+      title="更改头像"
+      :visible.sync="imgdialogVisible"
+      width="30%"
+    >
+      <el-upload
+      class="avatar-uploader"
+      action="http://localhost:8888/upload"
+      :show-file-list="false"
+      :on-success="handleAvatarSuccess"
+      :before-upload="beforeAvatarUpload">
+      <img v-if="ruleForm.image" :src="ruleForm.image" class="avatar">
+      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+    </el-upload>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="imgdialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="imgdialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </el-container>
 </template>
 
 <script>
+import { VueEditor } from "vue2-editor";
 export default {
+      components: {
+    VueEditor
+  },
   data(){
- var validateClass = (rule,value,callback) => {
-        if (this.ruleForm.choice == "学生"){
-          if (!value) {
-          return callback(new Error("班级不能为空"));
-          } else {
-          callback();
-        }
-        }else {
-          callback();
-        }
-      };
-    var validateDept = (rule,value,callback) => {
-        if (this.ruleForm.choice == "院领导"
-          ||this.ruleForm.choice == "学生"
-          || this.ruleForm.choice == "辅导员"){ 
-          if (!value) {
-            return callback(new Error("院系不能为空"));
-            } else {
-            callback();
-          }
-         }else {
-            callback();
-          }
-      };
-
     return{
-      classes:[],
-      selectStudent:"", //仅学生可见
-      selectTeacher:"",//仅辅导员可见
-      selectNoTeacher:"",//仅辅导员不可见
-      selectNoLeader:"",//仅教务处不可见
+      honordialogVisible:false,
+      introducedialogVisible:false,
+      imgdialogVisible:false,
       ruleForm: {
-        realname:"",
-        username: "",
-        age:"",
-        sex:"",
-        classes:"",
-        depts:"",   
-        choice:"",
       },
+
       rules: {
         username: [
           { required: true, message: "请输入账号", trigger: "blur" },
@@ -187,7 +209,7 @@ export default {
             
           },
         ],
-        realname: [
+        name: [
           { required: true, message: "请输入真实性名", trigger: "blur" },
           {
             validator: function (rule, value, callback) {
@@ -205,112 +227,131 @@ export default {
           { required: true, message: "年龄不能为空" ,trigger: "blur" },
           { type: "number", message: "年龄必须为数字值" },
         ],        
-        dept: [
-          { required: true, validator: validateDept, trigger: "blur"},
-        ],
-        classes: [
-         { required: true, validator: validateClass, trigger: "blur"},
-        ],
         sex: [
           { required: true, message: "性别不能为空", trigger: "blur" },]
       },
     }
   },
   methods:{
-    Hide(choice){
-        switch(choice){
-         case "学生":
-        //  console.log("test")
-            this.selectStudent = true;
-            this.selectTeacher = false;
-            this.selectNoLeader = true;
-            this.selectNoTeacher = true;
-            break;
-          case "辅导员":
-            this.selectTeacher = true
-            this.selectNoLeader = true;
-            this.selectNoTeacher = false;
-            break;
-          case "教务处":
-            this.selectTeacher = true
-            this.selectNoTeacher = true;
-            this.selectTeacher = false;
-            this.selectNoLeader = false;
-            break;
-        default:
-            this.selectStudent = false;
-            this.selectTeacher = false;
-            this.selectNoLeader = true;
-            this.selectNoTeacher = true;
-            break;
-        }
-    },
-    findAll(){
-      //  const _this = this;
-      //   _this.ruleForm.username = window.sessionStorage.getItem("username");
-
-      //   this.$http.get('http://localhost:8181/data/findAllByUsername/'+_this.ruleForm.username).then(function(resp){
-      //    _this.ruleForm = resp.data
-      // // console.log(_this.value)
-      //   this.$http.get('http://localhost:8181/leave/findClass/'+_this.ruleForm.realname).then(function(resp){
-      //           _this.classes = resp.data;
-      //       }); 
-      //    });
-     
-    },
-    editData(formName) {
-      const _this = this;
-      this.$refs[formName].validate((valid) => {
-        if (valid) {           
-        this.$confirm('是否确定修改？', '温馨提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-
-        //修改用户基础信息
-        axios.post("http://localhost:8181/data/updateData", _this.ruleForm)
-        .then(function (resp) {
-
-            switch(resp.data){
-            case "empty":
-                _this.$message.error("该用户信息不存在！");
-          
-            break;
-
-            case "success":
-            // window.sessionStorage.setItem("loginuser",_this.ruleForm.username);
-              _this.$message({message: "修改成功",type: "success",});    
-              window.location.reload();
-            break;  
+     handleAvatarSuccess(res, file) {
+         //this.ruleForm.image = URL.createObjectURL(file.raw);
+            if(res.status==200){
+                 this.ruleForm.image = "http://localhost:8888"+res.data;
+                return this.$message.success("上传成功");
+            }else{
+                return this.$message.error("上传失败");
             }
-        })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消退出'
-          });          
-        });
-        } else {
-          _this.$message.error("请检查输入的信息是否完整！");
-          return false;
-        }
-      });
+      },
+      beforeAvatarUpload(file) {
+       const isJPG = file.type === 'image/jpeg';
+            const isGIF = file.type === 'image/gif';
+            const isPNG = file.type === 'image/png';
+            const isBMP = file.type === 'image/bmp';
+            const size = file.size / 1024 / 1024 < 10;
+            if (!isJPG && !isGIF && !isPNG && !isBMP) {
+                this.common.errorTip('上传图片必须是JPG/GIF/PNG/BMP 格式!');
+            }
+            if (!size) {
+              this.$message.error('上传头像图片大小不能超过 10MB!');
+            }
+            return (isJPG || isBMP || isGIF || isPNG) &&size;
+      },
+    async getStudentInfo(id){
+      //根据id查询用户信息
+            // this.$http.get()
+          const {data:res} = await this.$http.get("/editstudent",{params:{"id":id}});
+          if(res.status!=200){
+              return this.$message.error(res.msg);
+          }
+          if(res.status==200){
+              this.ruleForm = res.data;
+              this.value1[0] = this.ruleForm.college;
+              this.value1[1] = this.ruleForm.major;
+               // this.$message.success(res.msg)     
+          }
     },
+    async getTeacherInfo(id){
+       const {data:res} = await this.$http.get("/editteacher",{params:{"id":id}});
+           if(res.status!=200){
+                return this.$message.error(res.msg);
+            }
+            if(res.status==200){
+                this.ruleForm = res.data;
+                this.value1[0] = this.editForm.college;
+                this.value1[1] = this.editForm.major;
+               // this.$message.success(res.msg)     
+            }
+    },
+    getInfo(){
+      const type = window.sessionStorage.getItem("type");
+      if(type=='student'){
+        const sid = parseInt(window.sessionStorage.getItem("sid"));
+        this.getStudentInfo(sid);
+      }else if(type=='teacher'){
+         const tid = parseInt(window.sessionStorage.getItem("tid"));
+        this.getTeacherInfo(tid);
+      }
+    },
+    //修改学生信息
+    async editStudent(){
+          const {data:res} = await this.$http.post("/editstudent",this.ruleForm);
+          if(res.status!=200){
+                return this.$message.error(res.msg);
+            }
+          if(res.status==200){
+              this.$message.success(res.msg)
+          }
+    },
+    //修改老师信息
+     async editTeacher(){
+        const {data:res} = await this.$http.post("/editteacher",this.ruleForm);
+         // console.log(res);
+        if(res.status!=200){
+          return this.$message.error(res.msg);
+        }
+        if(res.status==200){
+          this.$message.success(res.msg)
+        }
+      },
+      editData(){
+        const type = window.sessionStorage.getItem("type");
+      if(type=='student'){
+        this.editStudent();
+      }else if(type=='teacher'){
+        this.editTeacher();
+      }
+      }
+    
   },
   created(){
-    
-      var choice = window.sessionStorage.getItem("choice");
-      this.Hide(choice);
-      if(choice === "管理员"){
-          this.$router.push({name: "MasterPage"});
-      }else{
-          this.findAll();
-      }
+    this.getInfo();
+    console.log(this.ruleForm)
   },
 }
 </script>
 
-<style>
-
+<style  scoped>
+ .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 </style>

@@ -28,7 +28,7 @@
                             <span>首页</span>
                         </template>
                          <!-- 二级菜单 -->
-                        <el-menu-item index="/psersoncenter" @click="saveNavState('/psersoncenter')">
+                        <el-menu-item index="/psersoncenter" v-if="type!='admin'" @click="saveNavState('/psersoncenter')">
                             <template slot="title">
                                 <i class="el-icon-info"></i>
                                 <span>个人中心</span>
@@ -122,13 +122,13 @@
                             <span>学习管理</span>
                         </template>
                         <!-- 二级菜单 -->
-                        <el-menu-item index="/publishpaper" @click="saveNavState('/publishpaper')">
+                        <el-menu-item index="/publishpaper" v-if="type=='student'" @click="saveNavState('/publishpaper')">
                             <template slot="title">
                                 <i class="el-icon-document-add"></i>
                                 <span>提交论文</span>
                             </template>
                         </el-menu-item>
-                        <el-menu-item index="/paper" @click="saveNavState('/paper')">
+                        <el-menu-item index="/paper" v-if="type=='student'" @click="saveNavState('/paper')">
                             <template slot="title">
                                 <i class="el-icon-document"></i>
                                 <span>我的提交</span>
@@ -184,13 +184,13 @@
                             <!-- 文字 -->
                             <span>成长管理</span>
                         </template>
-                         <el-menu-item index="/mystudent" @click="saveNavState('/mystudent')">
+                         <el-menu-item index="/mystudent" v-if="type=='teacher'" @click="saveNavState('/mystudent')">
                             <template slot="title">
                                 <i class="el-icon-connection"></i>
                                 <span>我的学生</span>
                             </template>
                         </el-menu-item>
-                        <el-menu-item index="/myplan" @click="saveNavState('/myplan')">
+                        <el-menu-item index="/myplan" v-if="type=='student'" @click="saveNavState('/myplan')">
                                 <template slot="title">
                                     <i class="el-icon-data-line"></i>
                                     <span>查看计划</span>
