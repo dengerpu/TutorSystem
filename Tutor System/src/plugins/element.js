@@ -44,7 +44,9 @@ import {
     PageHeader,
     Avatar,
     Radio,
-    RadioGroup
+    RadioGroup,
+    Progress,
+    Checkbox
 } from 'element-ui'
 import VueRouter from 'vue-router'
 
@@ -91,6 +93,8 @@ Vue.use(PageHeader)
 Vue.use(Avatar)
 Vue.use(Radio)
 Vue.use(RadioGroup)
+Vue.use(Progress)
+Vue.use(Checkbox)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm;

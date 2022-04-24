@@ -682,7 +682,7 @@ export default {
                 this.addform.college = this.value[0];
                 this.addform.major = this.value[1];
                 this.addform.image = this.uploadImageUrl;
-                console.log(this.addform);
+                //console.log(this.addform);
                 const{data:res}= await this.$http.post("/students",this.addform)
                // console.log(res);
                 if(res.status!=200){

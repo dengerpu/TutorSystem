@@ -29,6 +29,7 @@ import PaperManage from '../components/course/PaperManage.vue'
 import PublishPaper from '../components/course/PublishPaper.vue'
 import PaperDetails from '../components/course/PaperDeatis.vue'
 import EditPaper from '../components/course/EditPaper.vue'
+import MyStudentPaper from '../components/course/MyStudentPaper.vue'
 
 
 Vue.use(VueRouter)
@@ -71,7 +72,8 @@ const routes = [
       {path:'/paper',component:PaperManage},
       {path:'/publishpaper',component:PublishPaper},
       {path:'/paperdetails',component:PaperDetails},
-      {path:'/editpaper',component:EditPaper}
+      {path:'/editpaper',component:EditPaper},
+      {path:'/mystudentpaper',component:MyStudentPaper}
     ]}
 ]
 

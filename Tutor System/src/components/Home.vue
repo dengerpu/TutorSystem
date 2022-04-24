@@ -134,6 +134,12 @@
                                 <span>我的提交</span>
                             </template>
                         </el-menu-item>
+                        <el-menu-item index="/mystudentpaper" v-if="type=='teacher'" @click="saveNavState('/mystudentpaper')">
+                            <template slot="title">
+                                <i class="el-icon-document"></i>
+                                <span>查看提交</span>
+                            </template>
+                        </el-menu-item>
                         <el-menu-item index="/timetable" @click="saveNavState('/timetable')">
                             <template slot="title">
                                 <i class="el-icon-date"></i>

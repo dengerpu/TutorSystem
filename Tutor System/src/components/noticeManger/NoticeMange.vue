@@ -182,9 +182,10 @@
     <el-card style="margin:20px;" class="box-card">
     <el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
     <div style="text-align: left; ">
-        <el-tag effect="dark" type="info"  style="font-size:15px; margin:24px;margin-bottom:20px; line-height:0px;">
+        <!-- <el-tag effect="dark" type="info"  style="font-size:15px; margin:24px;margin-bottom:20px; line-height:0px;">
             <h2>通知记录</h2>
-        </el-tag>
+        </el-tag> -->
+        <el-button type="info">通知记录</el-button>
     </div>
     <el-table class="mytable" :data="tableData" border>
       <!-- <el-table-column prop="frequency" label="序号" align="center" width="50px" ></el-table-column> -->
@@ -334,13 +335,12 @@ export default {
           //获取老师姓名
       async getTeachName(username){
         const {data:res} = await this.$http.get('/tearname',{params:{"username":username}});
-        //console.log(res);
         if(res.status!=200){
               this.NoticeForm.author = "未知"
               return this.$message.error(res.msg)
           }else if(res.status==200){
-              this.NoticeForm.author = res.data.author;
-              this.NoticeForm.tid = res.data.tid;
+              this.NoticeForm.author = res.data.name;
+              this.NoticeForm.tid = res.data.id;
           }
       },
       //发布通知
@@ -349,6 +349,7 @@ export default {
               if (valid) {
                //console.log(this.NoticeForm);
                 this.NoticeForm.update_time = this.NoticeForm.create_time;
+                //console.log(this.NoticeForm)
                   const{data:res}= await this.$http.post("/notices",this.NoticeForm)
                       // console.log(res);
                         if(res.status!=200){
@@ -459,6 +460,9 @@ export default {
         // 跳转到详情页面
         getDetails(id){
             this.$router.push({path:"/noticedetails",query:{id:id}});
+        },
+        resetForm(formName) {
+         this.$refs[formName].resetFields();
         },
 
 
