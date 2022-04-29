@@ -3,8 +3,8 @@
             <!-- 面包屑导航 -->
        <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>通知管理</el-breadcrumb-item>
-            <el-breadcrumb-item>发布通知</el-breadcrumb-item>
+            <el-breadcrumb-item>任务管理</el-breadcrumb-item>
+            <el-breadcrumb-item>发布任务</el-breadcrumb-item>
         </el-breadcrumb>
 
       <div>
@@ -169,7 +169,7 @@
           <el-form-item  >
                   <div style="text-align:left;">
         <el-button plain  type="success" icon="el-icon-s-management" @click="sendNoticeDialog()"
-              >发布通知</el-button
+              >发布任务</el-button
             >
         </div>
           </el-form-item>
@@ -185,7 +185,7 @@
         <!-- <el-tag effect="dark" type="info"  style="font-size:15px; margin:24px;margin-bottom:20px; line-height:0px;">
             <h2>通知记录</h2>
         </el-tag> -->
-        <el-button type="info">通知记录</el-button>
+        <el-button type="info">任务记录</el-button>
     </div>
     <el-table class="mytable" :data="tableData" border>
       <!-- <el-table-column prop="frequency" label="序号" align="center" width="50px" ></el-table-column> -->

@@ -3,15 +3,16 @@
             <!-- 面包屑导航 -->
        <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>学习管理</el-breadcrumb-item>
+            <el-breadcrumb-item>任务管理</el-breadcrumb-item>
             <el-breadcrumb-item>我的提交</el-breadcrumb-item>
         </el-breadcrumb>
     <el-card style="margin:20px;" class="box-card">
     <el-col :span="24" :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
     <div style="text-align: left; ">
-        <el-tag effect="dark" type="info"  style="font-size:15px; margin:24px;margin-bottom:20px; line-height:0px;">
+        <!-- <el-tag effect="dark" type="info"  style="font-size:15px; margin:24px;margin-bottom:20px; line-height:0px;">
             <h2>提交记录</h2>
-        </el-tag>
+        </el-tag> -->
+         <el-button type="info">提交记录</el-button>
     </div>
     <el-table class="mytable" :data="tableData" border>
         <el-table-column prop="update_time" align="center" sortable label="提交时间"

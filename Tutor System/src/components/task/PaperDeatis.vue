@@ -3,7 +3,7 @@
        <!-- 面包屑导航 -->
        <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>学习管理</el-breadcrumb-item>
+            <el-breadcrumb-item>任务管理</el-breadcrumb-item>
              <el-breadcrumb-item>详情</el-breadcrumb-item>
         </el-breadcrumb>
         <el-card>
@@ -89,11 +89,13 @@ export default {
         async getPaperInfo(){
            const pid = this.$route.query.id;  //论文id
             const {data:res} = await this.$http.get('/editpaper',{params:{"id":pid}});
-               // console.log(res);
+              //  console.log(res);
             if(res.status!=200){
                 this.$message.console.error(res.msg);
             }
             if(res.status==200){
+                this.id = parseInt(res.data.sid);
+                this.getStudentInfo();
                 this.paperInfo = res.data;
             }
         },
@@ -102,9 +104,12 @@ export default {
         }
     },
     created(){
-        this.id = parseInt(window.sessionStorage.getItem("sid"));
-        this.getStudentInfo();
+        if(window.sessionStorage.getItem!=null){
+            this.id = parseInt(window.sessionStorage.getItem("sid"));
+        }
         this.getPaperInfo();
+        //this.getStudentInfo();
+     
     }
 }
 </script>

@@ -121,25 +121,6 @@
                             <!-- 文字 -->
                             <span>学习管理</span>
                         </template>
-                        <!-- 二级菜单 -->
-                        <el-menu-item index="/publishpaper" v-if="type=='student'" @click="saveNavState('/publishpaper')">
-                            <template slot="title">
-                                <i class="el-icon-document-add"></i>
-                                <span>提交论文</span>
-                            </template>
-                        </el-menu-item>
-                        <el-menu-item index="/paper" v-if="type=='student'" @click="saveNavState('/paper')">
-                            <template slot="title">
-                                <i class="el-icon-document"></i>
-                                <span>我的提交</span>
-                            </template>
-                        </el-menu-item>
-                        <el-menu-item index="/mystudentpaper" v-if="type=='teacher'" @click="saveNavState('/mystudentpaper')">
-                            <template slot="title">
-                                <i class="el-icon-document"></i>
-                                <span>查看提交</span>
-                            </template>
-                        </el-menu-item>
                         <el-menu-item index="/timetable" @click="saveNavState('/timetable')">
                             <template slot="title">
                                 <i class="el-icon-date"></i>
@@ -153,8 +134,43 @@
                             </template>
                         </el-menu-item>
                     </el-submenu>
-                                        <!-- 一级菜单 -->
+                                          <!-- 一级菜单 -->
                     <el-submenu index="4">
+                        <!-- 一级菜单模板 -->
+                        <template slot="title">
+                            <!-- 图标 -->
+                            <i class="el-icon-s-ticket"></i>
+                            <!-- 文字 -->
+                            <span>任务管理</span>
+                        </template>
+                        <el-menu-item index="/notice" v-if="type!='student'" @click="saveNavState('/notice')">
+                            <template slot="title">
+                                <i class="el-icon-document-add"></i>
+                                <span>发布任务</span>
+                            </template>
+                        </el-menu-item>
+                        <!-- 二级菜单 -->
+                        <el-menu-item index="/publishpaper" v-if="type=='student'"  @click="saveNavState('/publishpaper')">
+                            <template slot="title">
+                                <i class="el-icon-document-add"></i>
+                                <span>提交任务</span>
+                            </template>
+                        </el-menu-item>
+                        <el-menu-item index="/paper" v-if="type=='student'"  @click="saveNavState('/paper')">
+                            <template slot="title">
+                                <i class="el-icon-document"></i>
+                                <span>我的提交</span>
+                            </template>
+                        </el-menu-item>
+                        <el-menu-item index="/mystudentpaper" v-if="type=='teacher'" @click="saveNavState('/mystudentpaper')">
+                            <template slot="title">
+                                <i class="el-icon-document"></i>
+                                <span>查看提交</span>
+                            </template>
+                        </el-menu-item>
+                    </el-submenu>
+                                        <!-- 一级菜单 -->
+                    <el-submenu index="5">
                         <!-- 一级菜单模板 -->
                         <template slot="title">
                             <!-- 图标 -->
@@ -162,12 +178,6 @@
                             <!-- 文字 -->
                             <span>通知管理</span>
                         </template>
-                       <el-menu-item index="/notice" v-if="type!='student'" @click="saveNavState('/notice')">
-                            <template slot="title">
-                                <i class="el-icon-document-add"></i>
-                                <span>发布会议</span>
-                            </template>
-                        </el-menu-item>
                         <el-menu-item index="/publish"  v-if="type!='student'" @click="saveNavState('/publish')">
                             <template slot="title">
                                 <i class="el-icon-edit-outline"></i>
@@ -182,7 +192,7 @@
                         </el-menu-item>
                     </el-submenu>
 
-                       <el-submenu index="5">
+                       <el-submenu index="6">
                         <!-- 一级菜单模板 -->
                         <template slot="title">
                             <!-- 图标 -->
